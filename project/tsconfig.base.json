@@ -14,7 +14,23 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@project/authentication": [
+        "libs/shared/account/authentication/src/index.ts"
+      ],
+      "@project/blog-post": ["libs/shared/post/blog-post/src/index.ts"],
+      "@project/blog-user": ["libs/shared/account/blog-user/src/index.ts"],
+      "@project/core": ["libs/shared/core/src/index.ts"],
+      "@project/data-access": ["libs/shared/data-access/src/index.ts"],
+      "@project/helpers": ["libs/shared/helpers/src/index.ts"],
+      "@project/post-comment": [
+        "libs/shared/comment/post-comment/src/index.ts"
+      ],
+      "@project/routing": ["libs/shared/post/routing/src/index.ts"],
+      "@project/routing-comment": [
+        "libs/shared/comment/routing-comment/src/index.ts"
+      ]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
