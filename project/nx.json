@@ -45,7 +45,9 @@
         "apps/publications-e2e/**/*",
         "apps/notify-e2e/**/*",
         "apps/file-vault-e2e/**/*",
-        "apps/api-e2e/**/*"
+        "apps/api-e2e/**/*",
+        "account-e2e/**/*",
+        "apps/account-e2e/**/*"
       ]
     }
   ]
