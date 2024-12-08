@@ -5,6 +5,7 @@
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
+    "esModuleInterop": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
@@ -15,12 +16,16 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@project/account-config": [
+        "libs/shared/account/account-config/src/index.ts"
+      ],
       "@project/authentication": [
         "libs/shared/account/authentication/src/index.ts"
       ],
       "@project/blog-post": ["libs/shared/post/blog-post/src/index.ts"],
       "@project/blog-user": ["libs/shared/account/blog-user/src/index.ts"],
       "@project/core": ["libs/shared/core/src/index.ts"],
+      "@project/shareable": ["shareable/common-const.ts"],
       "@project/data-access": ["libs/shared/data-access/src/index.ts"],
       "@project/helpers": ["libs/shared/helpers/src/index.ts"],
       "@project/post-comment": [
