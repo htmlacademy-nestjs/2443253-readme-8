@@ -1,4 +1,4 @@
-import { PostState, PostType } from "../constants";
+import { PostState, PostType } from '../constants'
 import { FotoPost, QuotePost, RefPost, TextPost, VideoPost } from "./type-post.type";
 
 export type Post = VideoPost & TextPost & QuotePost & FotoPost & RefPost& {
