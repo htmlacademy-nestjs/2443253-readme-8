@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output = "../../../../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id          String   @id @default(uuid()) @map("id")
+  tegs        String[]
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  userId      String? @map("user_id")
+  countLikes  Int?
+  countComments Int?
+  state       String? //Состояние публикации
+  repost      Boolean?
+  originPostId String? @map("originpost_id")
+  type        String
+
+  name        String //Название публикации | текст цитаты | путь к файлу фото | ссылка (публикация типа ссылка)
+  video       String //Публикация типа видео -- путь к файлу с видео
+  announcement String //Публикация типа текст -- текст с анонсом
+  text        String //Публикация типа текст -- текст публикации,//Публикация типа ссылка -- описание
+  author     String //Публикация типа цитата -- автор
+
+  comments    Comment[]// один ко многим - публикация - комментарии
+  likes    Like[]// один ко многим - публикация - лайки разных пользователей
+  @@index([name])
+  @@map("posts")
+}
+
+model Comment {
+  id          String   @id @default(uuid())
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  text String
+  userId String @map("user_id")
+  post        Post      @relation(fields: [postId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  postId String @map("post_id")
+  @@index([postId])
+   @@map("comments")
+}
+
+
+model Like {
+  id          String   @id @default(uuid())
+  userId String @map("user_id")
+  post        Post      @relation(fields: [postId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  postId String @map("post_id")
+  @@index([postId])
+   @@map("likes")
+}
+

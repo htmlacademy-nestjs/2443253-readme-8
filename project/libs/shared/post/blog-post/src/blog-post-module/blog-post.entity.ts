@@ -1,3 +1,4 @@
+
 import { Entity, Post, PostType, PostState } from '@project/core';
 import { StorableEntity} from '@project/core';
 
@@ -6,28 +7,30 @@ import { StorableEntity} from '@project/core';
 
 
 
+
 export class BlogPostEntity extends Entity implements StorableEntity<Post> {
-  public tegs?: string[];
-  public date: string;
-  public createDate: string;
+
+  public tegs: string[];
+
+  public createdAt: Date;
+  public updatedAt: Date;
   public userId: string;
-  public repost: boolean;
-  public state:PostState;
   public countLikes:number;
   public countComments:number;
 
-
-
-  public name?: string;//Тип публикации: видео,текст
-  public video?: string;////Тип публикации: видео
-  public announcement?: string;////Тип публикации: текст
-  public text?: string;////Тип публикации: текст, цитата
-  public author?: string;//Тип публикации: цитата
-  public foto?: string;//Тип публикации: фото
-  public reference?: string;//Тип публикации: ссылка
-  public description?: string;//Тип публикации: ссылка
+  public state:string;
+  public repost: boolean;
+  public originPostId:string;
 
   public type:PostType;//тип публикации
+
+  public name: string;//Тип публикации: видео,текст
+  public video?: string;////Тип публикации: видео
+  public announcement: string;////Тип публикации: текст
+  public text: string;////Тип публикации: текст, цитата
+  public author: string;//Тип публикации: цитата
+  // public comments: Comment[];//Комментарии
+  // public likes: Like[];//Лайки
 
 
 
@@ -41,52 +44,59 @@ export class BlogPostEntity extends Entity implements StorableEntity<Post> {
     if (! post) {
       return;
     }
+    this.id = post.id ?? undefined;//Идентификатор поста
+    this.tegs = post.tegs;
+    this.createdAt = post.createdAt ?? undefined;
+    this.updatedAt = post.updatedAt ?? undefined;
+    this.userId = post.userId ?? undefined;
+    this.countLikes = post.countLikes ?? undefined;
+    this.countComments = post.countComments ?? undefined;;
 
-    this.id = post.id ?? '';
-
-    this.date = post.date;
-    this.createDate = post.createDate;
-    this.userId = post.userId;
-    this.repost = post.repost;
     this.state = post.state;
-    this.countLikes = post.countLikes;
-    this.countComments = post.countComments;
+    this.repost = post.repost;
+    this.originPostId = post.originPostId ?? undefined;;
+
+    this.type = post.type;
 
     this.name = post.name;
     this.video = post.video;
     this.announcement = post.announcement;
     this.text = post.text;
     this.author = post.author;
-    this.foto = post.foto;
-    this.reference = post.reference;
-    this.description = post.description;
 
-    this.type = post.type;
+    // this.comments = post.comments;
+    // this.likes = post.likes;
 
   }
 
   public toPOJO(): Post {
     return {
-      id: this.id,
 
-      date : this.date,
-      createDate : this.createDate,
+      id: this.id,
+      tegs : this.tegs,
+      createdAt : this.createdAt,
+      updatedAt : this.updatedAt,
+
       userId : this.userId,
-      repost : this.repost,
-      state : this.state,
       countLikes : this.countLikes,
       countComments : this.countComments,
+
+      state : this.state as PostState,
+      repost : this.repost,
+      originPostId : this.originPostId,
+
+      type: this.type,
 
       name: this.name,
       video: this.video,
       announcement: this.announcement,
       text: this.text,
       author: this.author,
-      foto: this.foto,
-      reference: this.reference,
-      description: this.description,
 
-      type: this.type,
+      // comments: this.comments,
+      // likes: this.likes,
+
+
     }
   }
 
