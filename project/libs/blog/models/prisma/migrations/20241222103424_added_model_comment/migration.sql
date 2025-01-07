@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "posts" ALTER COLUMN "state" DROP NOT NULL,
+ALTER COLUMN "repost" DROP NOT NULL;

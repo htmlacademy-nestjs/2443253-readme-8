@@ -7,3 +7,5 @@ export { EntityFactory } from './interfaces/entity-factory.interface';
 
 export { PostType, PostState } from './lib/constants'
 export { Post } from './lib/types/post.type'
+export { Like } from './lib/types/like-type'
+export { Comment } from './lib/types/comment-type'
