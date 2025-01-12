@@ -1,11 +1,13 @@
-import { PrismaClient } from '@prisma/client';
+import { PostState, PostType,PrismaClient } from '@prisma/client';
 
-const FIRST_POST_UUID = '6d308040-96a2-4162-bea6-2338e9976540';
-const SECOND_POST_UUID = 'ab04593b-da99-4fe3-8b4b-e06d82e2efdd';
 
-const FIRST_USER_ID = '658170cbb954e9f5b905ccf4';
-const SECOND_USER_ID = '6581762309c030b503e30512';
+const FIRST_POST_UUID = crypto.randomUUID();
+const SECOND_POST_UUID = crypto.randomUUID();
 
+const FIRST_USER_ID = crypto.randomUUID();
+const SECOND_USER_ID = crypto.randomUUID();
+const DEFAULT_LIKES_COUNT = 1;
+const DEFAULT_COMMENTS_COUNT = 1;
 
 function getPosts() {
   return [
@@ -13,12 +15,12 @@ function getPosts() {
       id: FIRST_POST_UUID,
       tegs: ['#животные'],
       userId: FIRST_USER_ID,
-      countLikes:1,
-      countComments:1,
-      state: 'published',
+      countLikes:DEFAULT_LIKES_COUNT,
+      countComments:DEFAULT_COMMENTS_COUNT,
+      state: PostState.published,
       repost: false,
       originPostId: FIRST_POST_UUID,
-      type: 'text',
+      type: PostType.text,
       name: 'Домашние животные',
       announcement: 'За что мы любим наших питомцев',
       text: 'Мы должны заботиться и ухаживать за тех кого приручили',
@@ -27,7 +29,7 @@ function getPosts() {
 
       comments: [
         {
-          text: 'Не уверен что все так делают',
+          message: 'Не уверен что все так делают',
           userId: SECOND_USER_ID,
         }
     ],
@@ -41,21 +43,21 @@ function getPosts() {
       id: SECOND_POST_UUID,
       tegs: ['#фильм'],
       userId: SECOND_USER_ID,
-      countLikes:1,
-      countComments:1,
-      state: 'published',
+      countLikes:DEFAULT_LIKES_COUNT,
+      countComments:DEFAULT_COMMENTS_COUNT,
+      state: PostState.published,
       repost: false,
       originPostId: SECOND_POST_UUID,
-      type: 'text',
+      type: PostType.text,
       name: 'Художественные фильмы',
       announcement: 'Что можно посмотреть в этом месяце',
-      text: 'Недавно вышел новый сезон МосГаз',
+      message: 'Недавно вышел новый сезон МосГаз',
       video:'',
       author:'',
 
       comments: [
         {
-          text: 'Да, неплохой сериал',
+          message: 'Да, неплохой сериал',
           userId: FIRST_USER_ID,
         },
       ],
@@ -88,7 +90,7 @@ async function seedDb(prismaClient: PrismaClient) {
         type: post.type,
         name: post.name,
         announcement: post.announcement,
-        text: post.text,
+        text: 'Текст',
         video: post.video,
         author: post.author,
 

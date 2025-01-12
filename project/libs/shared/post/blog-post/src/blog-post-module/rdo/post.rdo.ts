@@ -1,6 +1,6 @@
 
-import { PostState, PostType } from '@project/core';
 import { Expose } from 'class-transformer';
+import { Comment, PostState, PostType } from '@project/core';
 
 export class PostRdo {
   @Expose()
@@ -16,6 +16,7 @@ export class PostRdo {
 
   @Expose()
   userId:string;//Идентификатор пользователя
+
   @Expose()
   countLikes:number;//Кол-во лайков
   @Expose()
@@ -51,5 +52,9 @@ export class PostRdo {
 
   @Expose()
   author: string;
+
+  //Комментарии
+  @Expose()
+  public comments: Comment[]
 
 }

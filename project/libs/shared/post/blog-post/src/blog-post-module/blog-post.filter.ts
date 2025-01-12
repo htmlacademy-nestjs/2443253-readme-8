@@ -1,5 +1,5 @@
-import { Prisma } from '@prisma/client';
-import { PostState } from '@project/core';
+import { PostState, Prisma } from '@prisma/client';
+
 
 export interface PostFilter {
   id?: string;

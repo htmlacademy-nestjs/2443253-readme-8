@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 
 import { BlogPostRepository } from './blog-post.repository';
 import { BlogPostEntity } from './blog-post.entity';
@@ -6,66 +6,65 @@ import { BlogPostEntity } from './blog-post.entity';
 
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { BlogPostQuery } from './blog-post.query';
+import { PaginationResult } from '@project/core';
+import { BlogPostFactory } from './blog-post.factory';
+import { BlogCommentRepository, BlogCommentFactory, CreateCommentDto, BlogCommentEntity } from '@project/blog-comment';
 
-@Injectable()
 export class BlogPostService {
   constructor(
-    private readonly blogPostRepository: BlogPostRepository
+    private readonly blogPostRepository: BlogPostRepository,
+    private readonly blogCommentRepository: BlogCommentRepository,
+    private readonly blogCommentFactory: BlogCommentFactory,
   ) {}
 
-  public async getPost(id: string): Promise<BlogPostEntity> {
-    return this.blogPostRepository.findById(id);
-  }
-
-  public async getAllPosts(): Promise<BlogPostEntity[]> {
-    return await this.blogPostRepository.find();
+  public async getAllPosts(query?: BlogPostQuery): Promise<PaginationResult<BlogPostEntity>> {
+    return this.blogPostRepository.find(query);
   }
 
   public async createPost(dto: CreatePostDto): Promise<BlogPostEntity> {
-    const existspost = (await this.blogPostRepository.find({ name: dto.name })).at(0);
-    if (existspost) {
-      throw new ConflictException('A post with the name already exists');
-    }
 
-    const newpost = new BlogPostEntity(dto);
-    await this.blogPostRepository.save(newpost);
+    const newPost = BlogPostFactory.createFromCreatePostDto(dto);
+    await this.blogPostRepository.save(newPost);
 
-    return newpost;
+    return newPost;
   }
 
   public async deletePost(id: string): Promise<void> {
     try {
       await this.blogPostRepository.deleteById(id);
     } catch {
-      // TODO. Обратите внимание. Ошибки могут быть разными
-      // Вы должны реагировать на них по-разному.
-      throw new NotFoundException(`post with ID ${id} not found`);
+      throw new NotFoundException(`Post with ID ${id} not found`);
     }
+  }
+
+  public async getPost(id: string): Promise<BlogPostEntity> {
+    return this.blogPostRepository.findById(id)
   }
 
   public async updatePost(id: string, dto: UpdatePostDto): Promise<BlogPostEntity> {
-    const blogpostEntity = new BlogPostEntity(dto);
+    const existsPost = await this.blogPostRepository.findById(id);
+    let hasChanges = false;
 
-    try {
-      await this.blogPostRepository.update(blogpostEntity);
-      return blogpostEntity;
-    } catch {
-      throw new NotFoundException(`post with ID ${id} not found`);
+    for (const [key, value] of Object.entries(dto)) {
+      if (value !== undefined && existsPost[key] !== value) {
+        existsPost[key] = value;
+        hasChanges = true;
+      }
+
     }
+    if (!hasChanges) {
+      return existsPost;
+    }
+    await this.blogPostRepository.update(existsPost);
+    return existsPost;
   }
 
-  public async getPostsByIds(postIds: string[]): Promise<BlogPostEntity[]> {
-    const posts = await this.blogPostRepository.findByIds(postIds);
+  public async addComment(postId:string, dto: CreateCommentDto): Promise<BlogCommentEntity> {
+    const existsPost = await this.getPost(postId);
+    const newComment = this.blogCommentFactory.createFromDto(dto,existsPost.id);
+    await this.blogCommentRepository.save(newComment);
 
-    if (posts.length !== postIds.length) {
-      const foundpostIds = posts.map((post) => post.id);
-      const notFoundpostIds = postIds.filter((postId) => !foundpostIds.includes(postId));
-
-      if (notFoundpostIds.length > 0) {
-        throw new NotFoundException(`Categories with ids ${notFoundpostIds.join(', ')} not found.`);
-      }
-    }
-
-    return posts;
+    return newComment;
   }
 }

@@ -19,31 +19,44 @@ model Post {
   tegs        String[]
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
-  userId      String? @map("user_id")
-  countLikes  Int?
-  countComments Int?
-  state       String? //Состояние публикации
-  repost      Boolean?
-  originPostId String? @map("originpost_id")
-  type        String
+  userId      String @map("user_id")
+  countLikes  Int
+  countComments Int
+  state       PostState @map("post_state")//Состояние публикации
+  repost      Boolean
+  originPostId String @map("originpost_id")
+  type        PostType @map("post_type")
 
   name        String //Название публикации | текст цитаты | путь к файлу фото | ссылка (публикация типа ссылка)
-  video       String //Публикация типа видео -- путь к файлу с видео
-  announcement String //Публикация типа текст -- текст с анонсом
-  text        String //Публикация типа текст -- текст публикации,//Публикация типа ссылка -- описание
-  author     String //Публикация типа цитата -- автор
+  video       String? //Публикация типа видео -- путь к файлу с видео
+  announcement String? //Публикация типа текст -- текст с анонсом
+  text        String? //Публикация типа текст -- текст публикации,//Публикация типа ссылка -- описание
+  author     String? //Публикация типа цитата -- автор
 
   comments    Comment[]// один ко многим - публикация - комментарии
   likes    Like[]// один ко многим - публикация - лайки разных пользователей
   @@index([name])
   @@map("posts")
 }
+enum PostType {
+  video
+  text
+  quote
+  foto
+  reference
+}
+
+enum PostState {
+  draft
+  published
+}
+
 
 model Comment {
   id          String   @id @default(uuid())
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
-  text String
+  message String @map("text")
   userId String @map("user_id")
   post        Post      @relation(fields: [postId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   postId String @map("post_id")

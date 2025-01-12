@@ -3,9 +3,16 @@ GET http://localhost:3000/api/posts HTTP/1.1
 
 ###
 
+# Get posts with filter
+
+GET http://localhost:3000/api/posts?limit=2&sortDirection=desc&state=draft HTTP/1.1
+
+###
+
+
 # Get post by Id
 
-GET http://localhost:3000/api/posts/139f1e94-079a-4074-b5a5-0425ba0ad3ef HTTP/1.1
+GET http://localhost:3000/api/posts/ab04593b-da99-4fe3-8b4b-e06d82e2efdd HTTP/1.1
 
 ###
 
@@ -15,18 +22,17 @@ POST http://localhost:3000/api/posts HTTP/1.1
 Content-Type: application/json
 
 {
+  "tegs":[],
+  "userId":"6755746b5903856268a55d4a",
   "state":"draft",
   "repost":false,
   "type":"text",
-  "name": "Журналы",
-  "userId":"78",
-  "countLikes":0,
-  "countComments":0,
-  "originPostId":"0",
+  "name": "Космос",
   "video":"",
-  "author":"",
-  "text":"",
-  "announcement":""
+  "announcement":"",
+   "text":"",
+  "author":""
+
 }
 
 ###
@@ -47,3 +53,11 @@ Content-Type: application/json
 }
 
 ###
+# Create a new comment for post
+POST http://localhost:3000/api/posts/79cc980c-3e48-4598-8607-0a29f0a837cf/comments HTTP/1.1
+Content-Type: application/json
+
+{
+  "message": "This is text2",
+  "userId": "65990102bb965b742900ba59"
+}
