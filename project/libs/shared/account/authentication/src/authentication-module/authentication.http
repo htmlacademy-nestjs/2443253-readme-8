@@ -13,6 +13,7 @@ Content-Type: application/json
 # Get user by ID
 GET http://localhost:4000/api/auth/675ee8a2567b9f8e733102c9 HTTP/1.1
 
+
 ###
 
 # Login user by email and password
@@ -28,5 +29,6 @@ Content-Type: application/json
 
 # Demo route for Pipe
 GET http://localhost:4000/api/auth/demo/1 HTTP/1.1.
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXJAbm90Zm91bmQubG9jYWwiLCJyb2xlIjoidXNlciIsImxhc3RuYW1lIjoiU21pdGgiLCJmaXJzdG5hbWUiOiJLZWtzIiwiaWF0IjoxNzA0NjE5MTk5LCJleHAiOjE3MDQ2MTk0OTl9.skXytHVZvtETNqSSqUjsVIq4ogGs3fD_7mgn1qpRLPo
 
 ###

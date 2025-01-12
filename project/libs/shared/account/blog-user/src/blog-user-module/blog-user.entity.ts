@@ -5,7 +5,7 @@ import { SALT_ROUNDS } from './blog-user.constant';
 
 export class BlogUserEntity extends Entity implements StorableEntity<AuthUser> {
   public email: string;
-  public firstname: string;
+  public userName: string;
   public passwordHash: string;
   public subscribers: string[];
 
@@ -22,7 +22,7 @@ export class BlogUserEntity extends Entity implements StorableEntity<AuthUser> {
 
     this.id = user.id ?? '';
     this.email = user.email;
-    this.firstname = user.userName;
+    this.userName = user.userName;
     this.subscribers = user.subscribers;
     this.passwordHash = user.passwordHash;
   }
@@ -31,7 +31,7 @@ export class BlogUserEntity extends Entity implements StorableEntity<AuthUser> {
     return {
       id: this.id,
       email: this.email,
-      userName: this.firstname,
+      userName: this.userName,
       passwordHash: this.passwordHash,
       subscribers:[]
     }
