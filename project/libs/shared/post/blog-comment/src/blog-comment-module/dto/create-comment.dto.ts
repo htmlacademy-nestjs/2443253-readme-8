@@ -1,4 +1,4 @@
-import { IsMongoId, IsNotEmpty, IsString } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsString} from 'class-validator';
 import { BlogCommentValidateMessage } from '../blog-comment.constant';
 export class CreateCommentDto {
   @IsString()

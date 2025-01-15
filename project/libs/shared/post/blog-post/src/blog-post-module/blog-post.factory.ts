@@ -13,6 +13,7 @@ export class BlogPostFactory implements EntityFactory<BlogPostEntity> {
   public static createFromCreatePostDto(dto: CreatePostDto): BlogPostEntity {
     const entity = new BlogPostEntity();
 
+    entity.id = crypto.randomUUID();
     entity.tegs = dto.tegs;
     entity.userId = dto.userId;
     entity.countLikes = 0;
@@ -27,7 +28,7 @@ export class BlogPostFactory implements EntityFactory<BlogPostEntity> {
     entity.announcement = dto.announcement;
     entity.text = dto.text;
     entity.author = dto.author;
-    //entity.comments = [];
+    entity.comments = [];
 
     return entity;
   }

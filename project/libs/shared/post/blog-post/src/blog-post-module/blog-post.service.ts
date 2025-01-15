@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { BlogPostRepository } from './blog-post.repository';
 import { BlogPostEntity } from './blog-post.entity';
@@ -11,6 +11,7 @@ import { PaginationResult } from '@project/core';
 import { BlogPostFactory } from './blog-post.factory';
 import { BlogCommentRepository, BlogCommentFactory, CreateCommentDto, BlogCommentEntity } from '@project/blog-comment';
 
+@Injectable()
 export class BlogPostService {
   constructor(
     private readonly blogPostRepository: BlogPostRepository,

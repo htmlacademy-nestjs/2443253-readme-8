@@ -17,6 +17,7 @@ export class BlogCommentFactory implements EntityFactory<BlogCommentEntity> {
       postId,
       createdAt: currentDate,
       updatedAt: currentDate,
+      id:crypto.randomUUID(),
     });
   }
 }
