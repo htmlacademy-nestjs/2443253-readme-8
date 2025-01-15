@@ -3,9 +3,9 @@ import { BlogPostEntity } from "./blog-post.entity";
 import { BlogPostFactory } from './blog-post.factory';
 import { BasePostgresRepository } from '@project/data-access';
 import { PrismaClientService } from "@project/models";
-import { PostState, PostType } from "@project/core";
-import { POSTS_FOR_ONE_REQUEST } from "./blog-post.constant";
-import { PostFilter, postFilterToPrismaFilter } from "./blog-post.filter";
+import { PaginationResult} from "@project/core";
+import { Prisma } from "@prisma/client";
+import { BlogPostQuery } from "./blog-post.query";
 
 
 @Injectable()
@@ -18,96 +18,141 @@ export class BlogPostRepository extends BasePostgresRepository<BlogPostEntity> {
     super(entityFactory, client);
   }
 
+  //Количество постов
+  private async getPostCount(where: Prisma.PostWhereInput): Promise<number> {
+    return this.client.post.count({ where });
+  }
 
-  public async save(entity: BlogPostEntity): Promise<void> {
-    const record = await this.client.post.create({
-      data: { ...entity.toPOJO() }
-    });
-
-    entity.id = record.id;
-    entity.createdAt = record.createdAt;
-    entity.updatedAt = record.updatedAt;
+  //Количество страниц
+  private calculatePostsPage(totalCount: number, limit: number): number {
+    return Math.ceil(totalCount / limit);
   }
 
 
+  public async save(entity: BlogPostEntity): Promise<void> {
+    const pojoEntity = entity.toPOJO();
+
+    const record = await this.client.post.create({
+      data: {
+        ...pojoEntity,
+        comments: {
+          connect: [],
+        }
+      }
+    });
+    entity.id = record.id;
+  }
+
+//Удаление по id
+  public async deleteById(id: string): Promise<void> {
+    await this.client.post.delete({
+      where: {
+        id
+      }
+    });
+  }
+
 //Поиск по id
 public async findById(id: string): Promise<BlogPostEntity> {
+
     const document = await this.client.post.findFirst({
       where: {
         id,
       },
+      include: {
+        comments: true,
+      }
     });
 
     if (! document) {
       throw new NotFoundException(`Post with id ${id} not found.`);
     }
+    return this.createEntityFromDocument(document);
 
-    return this.createEntityFromDocument({...document, state : document.state as PostState,type : document.type as PostType} );
   }
 
-  //запрос нескольких постов
-  public async find(filter?: PostFilter): Promise<BlogPostEntity[]> {
-    const where = filter ?? postFilterToPrismaFilter(filter);
+  //запрос с фильтрацией
+  public async find(query?: BlogPostQuery): Promise<PaginationResult<BlogPostEntity>> {
+    const skip = query?.page && query?.limit ? (query.page - 1) * query.limit : undefined;
+    const take = query?.limit;
+    const where: Prisma.PostWhereInput = {};
+    const orderBy: Prisma.PostOrderByWithRelationInput = {};
 
-    const documents = await this.client.post.findMany({
-      where,
-      take: POSTS_FOR_ONE_REQUEST,
-    });
-
-
-    return documents.map((document) => this.createEntityFromDocument({...document, state : document.state as PostState,type : document.type as PostType}));
-  }
-
-  //удаление поста по id
-  public async deleteById(id: string): Promise<void> {
-    await this.client.post.delete({
-      where: {
-        id,
+    if (query?.name) {
+      where.name =
+        {
+          contains: query?.name,
+        }
       }
-    });
+
+    if  (query?.teg) {
+    where.tegs = {
+        has: query.teg,
+    }
+    }
+
+    if  (query?.type) {
+      where.type = {
+        equals:query.type
+      }
+      }
+
+    if  (query?.type) {
+      where.state = {
+          equals:query.state
+      }
+      }
+
+    if (query?.sortDirection) {
+      orderBy.createdAt = query.sortDirection;
+    }
+
+    const [records, postCount] = await Promise.all([
+      this.client.post.findMany({ where, orderBy, skip, take,
+        include: {
+          comments: true,
+        },
+      }),
+      this.getPostCount(where),
+    ]);
+
+    return {
+      entities: records.map((record) => this.createEntityFromDocument(record)),
+      currentPage: query?.page,
+      totalPages: this.calculatePostsPage(postCount, take),
+      itemsPerPage: take,
+      totalItems: postCount,
+    }
   }
 
   //update
   public async update(entity: BlogPostEntity): Promise<void> {
+    const pojoEntity = entity.toPOJO();
     await this.client.post.update({
       where: { id: entity.id },
       data: {
-        tegs : entity.tegs,
-        createdAt : entity.createdAt,
-        updatedAt : entity.updatedAt,
+        tegs : pojoEntity.tegs,
 
-        userId : entity.userId,
-        countLikes : entity.countLikes,
-        countComments : entity.countComments,
+        userId : pojoEntity.userId,
+        countLikes : pojoEntity.countLikes,
+        countComments : pojoEntity.countComments,
 
-        state : entity.state as PostState,
-        repost : entity.repost,
-        originPostId : entity.originPostId,
+        state : pojoEntity.state,
+        repost : pojoEntity.repost,
+        originPostId : pojoEntity.originPostId,
 
-        type: entity.type,
+        type: pojoEntity.type,
 
-        name: entity.name,
-        video: entity.video,
-        announcement: entity.announcement,
-        text: entity.text,
-        author: entity.author,
+        name: pojoEntity.name,
+        video: pojoEntity.video,
+        announcement: pojoEntity.announcement,
+        text: pojoEntity.text,
+        author: pojoEntity.author,
+
+      },
+      include: {
+        comments: true,
       }
     });
   }
-
-
-  public async findByIds(ids: string[]): Promise<BlogPostEntity[]> {
-    const records = await this.client.post.findMany({
-      where: {
-        id: {
-          in: ids,
-        }
-      }
-    });
-
-    return records.map((record) => this.createEntityFromDocument({...record, state : record.state as PostState,type : record.type as PostType}));
-  }
-
-
-
 }

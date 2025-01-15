@@ -1,36 +1,53 @@
-import { Controller, Get, Param, Post, Body, Delete, Patch, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Query
+} from '@nestjs/common';
 
 import { fillDto } from '@project/helpers';
-import { BlogPostService } from './blog-post.service';
+
 import { PostRdo } from './rdo/post.rdo';
+import { BlogPostQuery } from './blog-post.query';
+import { BlogPostWithPaginationRdo } from './rdo/blog-post-with-pagination.rdo';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-
+import { BlogPostService } from './blog-post.service';
+import { CommentRdo, CreateCommentDto } from '@project/blog-comment';
 
 
 @Controller('posts')
 export class BlogPostController {
-  constructor(
-    private readonly blogPostService: BlogPostService
+  constructor (
+    private readonly blogPostService: BlogPostService,
   ) {}
 
   @Get('/:id')
   public async show(@Param('id') id: string) {
-    const postEntity = await this.blogPostService.getPost(id);
-    return fillDto(PostRdo, postEntity.toPOJO());
+    const post = await this.blogPostService.getPost(id);
+     return fillDto(PostRdo, post.toPOJO());
   }
 
   @Get('/')
-  public async index() {
-    const blogCategoryEntities = await this.blogPostService.getAllPosts();
-    const categories = blogCategoryEntities.map((blogCategory) => blogCategory.toPOJO());
-    return fillDto(PostRdo, categories);
+  public async index(@Query() query: BlogPostQuery) {
+    const postsWithPagination = await this.blogPostService.getAllPosts(query);
+    const result = {
+      ...postsWithPagination,
+      entities: postsWithPagination.entities.map((post) => post.toPOJO()),
+    }
+    return fillDto(BlogPostWithPaginationRdo, result);
   }
 
   @Post('/')
   public async create(@Body() dto: CreatePostDto) {
-    const newCategory = await this.blogPostService.createPost(dto);
-    return fillDto(PostRdo, newCategory.toPOJO());
+    const newPost = await this.blogPostService.createPost(dto);
+    return fillDto(PostRdo, newPost.toPOJO());
   }
 
   @Delete('/:id')
@@ -41,7 +58,13 @@ export class BlogPostController {
 
   @Patch('/:id')
   public async update(@Param('id') id: string, @Body() dto: UpdatePostDto) {
-    const updatedCategory = await this.blogPostService.updatePost(id, dto);
-    return fillDto(PostRdo, updatedCategory.toPOJO());
+    const updatedPost = await this.blogPostService.updatePost(id, dto);
+    return fillDto(PostRdo, updatedPost.toPOJO());
+  }
+
+  @Post('/:postId/comments')
+  public async createComment(@Param('postId') postId: string, @Body() dto: CreateCommentDto) {
+    const newComment = await this.blogPostService.addComment(postId, dto);
+    return fillDto(CommentRdo, newComment.toPOJO());
   }
 }

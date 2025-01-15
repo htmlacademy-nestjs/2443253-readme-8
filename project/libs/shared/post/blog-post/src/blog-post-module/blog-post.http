@@ -3,9 +3,16 @@ GET http://localhost:3000/api/posts HTTP/1.1
 
 ###
 
+# Get posts with filter
+
+GET http://localhost:3000/api/posts?limit=2&sortDirection=desc&state=draft HTTP/1.1
+
+###
+
+
 # Get post by Id
 
-GET http://localhost:3000/api/posts/139f1e94-079a-4074-b5a5-0425ba0ad3ef HTTP/1.1
+GET http://localhost:3000/api/posts/a491c6cf-14d5-42b9-8fa6-29991d7dd5b1 HTTP/1.1
 
 ###
 
@@ -15,18 +22,17 @@ POST http://localhost:3000/api/posts HTTP/1.1
 Content-Type: application/json
 
 {
+  "tegs":[],
+  "userId":"6755746b5903856268a55d4a",
   "state":"draft",
   "repost":false,
   "type":"text",
-  "name": "Журналы",
-  "userId":"78",
-  "countLikes":0,
-  "countComments":0,
-  "originPostId":"0",
+  "name": "Космос 4 часть",
   "video":"",
-  "author":"",
-  "text":"",
-  "announcement":""
+  "announcement":"",
+   "text":"",
+  "author":""
+
 }
 
 ###
@@ -39,11 +45,19 @@ DELETE http://localhost:3000/api/posts/3ee2cc3b-81cc-4789-bb50-d20b73ec2c34 HTTP
 
 # Update a post by id
 
-PATCH http://localhost:3000/api/posts/f39ed0ab-5129-4984-bd69-2ca375b55605 HTTP/1.1
+PATCH http://localhost:3000/api/posts/a491c6cf-14d5-42b9-8fa6-29991d7dd5b1 HTTP/1.1
 Content-Type: application/json
 
 {
-  "title": "This is new title"
+  "name": "This is new title"
 }
 
 ###
+# Create a new comment for post
+POST http://localhost:3000/api/posts/a491c6cf-14d5-42b9-8fa6-29991d7dd5b1/comments HTTP/1.1
+Content-Type: application/json
+
+{
+  "message": "This is text3",
+  "userId": "65990102bb965b742900ba59"
+}

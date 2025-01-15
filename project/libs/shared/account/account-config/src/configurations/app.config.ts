@@ -1,5 +1,5 @@
 import { registerAs } from '@nestjs/config';
-import { DEFAULT_PORT } from '@project/shareable';
+import { DEFAULT_PORT_ACCOUNTS } from '@project/shareable';
 import Joi from 'joi';
 
 const ENVIRONMENTS = ['development', 'production', 'stage'] as const;
@@ -13,7 +13,7 @@ export interface ApplicationConfig {
 
 const validationSchema = Joi.object({
   environment: Joi.string().valid(...ENVIRONMENTS).required(),
-  port: Joi.number().port().default(DEFAULT_PORT),
+  port: Joi.number().port().default(DEFAULT_PORT_ACCOUNTS),
 });
 
 function validateConfig(config: ApplicationConfig): void {
@@ -26,7 +26,7 @@ function validateConfig(config: ApplicationConfig): void {
 function getConfig(): ApplicationConfig {
   const config: ApplicationConfig = {
     environment: process.env.NODE_ENV as Environment,
-    port: parseInt(process.env.PORT || `${DEFAULT_PORT}`, 10),
+    port: parseInt(process.env.PORT || `${DEFAULT_PORT_ACCOUNTS}`, 10),
   };
 
   validateConfig(config);
