@@ -19,16 +19,25 @@
       "@project/account-config": [
         "libs/shared/account/account-config/src/index.ts"
       ],
+      "@project/account-notify": [
+        "libs/shared/account/account-notify/src/index.ts"
+      ],
       "@project/authentication": [
         "libs/shared/account/authentication/src/index.ts"
       ],
       "@project/blog-comment": ["libs/shared/post/blog-comment/src/index.ts"],
       "@project/blog-post": ["libs/shared/post/blog-post/src/index.ts"],
       "@project/blog-user": ["libs/shared/account/blog-user/src/index.ts"],
+      "@project/config": ["libs/file-vault/config/src/index.ts"],
       "@project/core": ["libs/shared/core/src/index.ts"],
       "@project/data-access": ["libs/shared/data-access/src/index.ts"],
+      "@project/email-subscriber": [
+        "libs/notify/email-subscriber/src/index.ts"
+      ],
+      "@project/file-uploader": ["libs/file-vault/file-uploader/src/index.ts"],
       "@project/helpers": ["libs/shared/helpers/src/index.ts"],
       "@project/models": ["libs/blog/models/src/index.ts"],
+      "@project/notify-config": ["libs/notify/notify-config/src/index.ts"],
       "@project/pipes": ["libs/shared/pipes/src/index.ts"],
       "@project/post": ["libs/shared/post/src/index.ts"],
       "@project/shareable": ["shareable/common-const.ts"]
