@@ -1,14 +1,15 @@
 import { Transform } from 'class-transformer';
-import { IsIn, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsIn,  IsMongoId,  IsNumber, IsOptional, IsString } from 'class-validator';
 
-import { SortDirection } from '@project/core';
+import { OrderBy, PostState, PostType, SortDirection } from '@project/core';
 
 import {
   DEFAULT_POST_COUNT_LIMIT,
   DEFAULT_SORT_DIRECTION,
-  DEFAULT_PAGE_COUNT
+  DEFAULT_PAGE_COUNT,
+  DEFAULT_SORT_TYPE,
+  DEFAULT_POST_STATE
 } from './blog-post.constant';
-import { PostState, PostType } from '@prisma/client';
 
 
 export class BlogPostQuery {
@@ -22,25 +23,38 @@ export class BlogPostQuery {
   @IsOptional()
   public teg?: string;
 
-  //Запрос черновиков
-  @IsString()
-  @IsOptional()
-  public state?: PostState;
 
-  //Запрос по типу публикации
-  @IsString()
-  @IsOptional()
-  public type?: PostType;
-
-  //Запрос по типу публикации
+  //Запрос по имени публикации
   @IsString()
   @IsOptional()
   public name?: string;
 
+  @IsString({ message: `Допустимо одно из значений:
+    draft|published` })
+  @IsOptional()
+  public state?: PostState = DEFAULT_POST_STATE;
 
+  //Запрос по типу video|text|quote|foto|reference
+  @IsString({ message: `Допустимо одно из значений:
+    video | text | quote | foto | reference` })
+  @IsOptional()
+  public type?: PostType;
+
+  //Запрос по пользователю
+  @IsMongoId()
+  @IsOptional()
+  public userId?: string;
+
+  //Направление сортировки
   @IsIn(Object.values(SortDirection))
   @IsOptional()
   public sortDirection: SortDirection = DEFAULT_SORT_DIRECTION;
+
+ //Признак сортировки
+  @IsIn(Object.values(OrderBy))
+  @IsOptional()
+  public sortType: OrderBy = DEFAULT_SORT_TYPE;
+
 
   @Transform(({ value }) => +value || DEFAULT_PAGE_COUNT)
   @IsOptional()

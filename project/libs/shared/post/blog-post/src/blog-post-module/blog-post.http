@@ -1,63 +1,64 @@
-# Get all posts
+# Получить все публикации
 GET http://localhost:3000/api/posts HTTP/1.1
 
 ###
 
-# Get posts with filter
-
-GET http://localhost:3000/api/posts?limit=2&sortDirection=desc&state=draft HTTP/1.1
-
-###
-
-
-# Get post by Id
-
-GET http://localhost:3000/api/posts/a491c6cf-14d5-42b9-8fa6-29991d7dd5b1 HTTP/1.1
+# Получить публикации с сортировкой и фильтрацией
+//фильтрация по тегам (teg=), по заголовке (name=) - (достаточно содержания одного слова),
+//по userId =
+//сортировка по дате создания, количеству лайков, количеству комментариев sortType=countLikes|countComments|createdAt
+//напрвление сортировки sortDirection=decs|asc
+GET http://localhost:3000/api/posts? HTTP/1.1
 
 ###
 
-# Create a new post
+# Получить публикацию по id (просмотр детальной информации)
 
+GET http://localhost:3000/api/posts/54276374-5ea4-4fb0-851e-a16d83d60516 HTTP/1.1
+
+###
+
+# Создать публикацию
+# Типы публикаций (type) - video|text|quote|foto|reference
+# Состояние публикаций (state) - draft|published
 POST http://localhost:3000/api/posts HTTP/1.1
 Content-Type: application/json
 
 {
   "tegs":[],
-  "userId":"6755746b5903856268a55d4a",
-  "state":"draft",
+  "userId":"6755746b5903856268a55d4b",
+  "state":"published",
   "repost":false,
   "type":"text",
-  "name": "Космос 4 часть",
-  "video":"",
-  "announcement":"",
-   "text":"",
-  "author":""
+  "name": "Животные 2 часть. Изучаем фауну Северной и Южной Америки"
 
 }
 
 ###
 
-# Delete a post by id
 
-DELETE http://localhost:3000/api/posts/3ee2cc3b-81cc-4789-bb50-d20b73ec2c34 HTTP/1.1
+# Создать репост публикации с определенным id пользователем с userId
+POST http://localhost:3000/api/posts/repost/ccfac116-0fdc-427b-ba9b-d08eeb2313dc HTTP/1.1
+Content-Type: application/json
+{
+  "userId":"6755746b5903856268a55d4a"
+}
 
 ###
 
-# Update a post by id
+# Удалить публикацию по id
 
-PATCH http://localhost:3000/api/posts/a491c6cf-14d5-42b9-8fa6-29991d7dd5b1 HTTP/1.1
+DELETE http://localhost:3000/api/posts/246aed1a-3f23-4191-966c-71cedcd62366 HTTP/1.1
+
+###
+
+# Обновить публикацию по id
+
+PATCH http://localhost:3000/api/posts/adba5e4c-6388-4c93-90ad-a6e249194790 HTTP/1.1
 Content-Type: application/json
 
 {
-  "name": "This is new title"
+  "state": "draft"
 }
 
-###
-# Create a new comment for post
-POST http://localhost:3000/api/posts/a491c6cf-14d5-42b9-8fa6-29991d7dd5b1/comments HTTP/1.1
-Content-Type: application/json
 
-{
-  "message": "This is text3",
-  "userId": "65990102bb965b742900ba59"
-}

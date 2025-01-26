@@ -10,15 +10,15 @@ export class BlogPostFactory implements EntityFactory<BlogPostEntity> {
     return new BlogPostEntity(entityPlainData);
   }
 
-  public static createFromCreatePostDto(dto: CreatePostDto): BlogPostEntity {
+  public static createFromCreatePostDto(dto: CreatePostDto, originPostId?:string,newUserId?: string, repost=false): BlogPostEntity {
     const entity = new BlogPostEntity();
 
     entity.id = crypto.randomUUID();
     entity.tegs = dto.tegs;
-    entity.userId = dto.userId;
+    entity.userId = repost ? newUserId: dto.userId;
     entity.countLikes = 0;
     entity.countComments = 0;
-    entity.originPostId = "";
+    entity.originPostId = repost ? originPostId : dto.userId;
     entity.state = dto.state;
     entity.repost = dto.repost;
     entity.type = dto.type;

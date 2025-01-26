@@ -30,7 +30,6 @@ export class BlogPostEntity extends Entity implements StorableEntity<Post> {
   public text?: string;////Тип публикации: текст, цитата
   public author?: string;//Тип публикации: цитата
   public comments: BlogCommentEntity[];//Комментарии
-  // public likes: Like[];//Лайки
 
 
 
@@ -73,9 +72,6 @@ export class BlogPostEntity extends Entity implements StorableEntity<Post> {
       const blogCommentEntity = blogCommentFactory.create(comment);
       this.comments.push(blogCommentEntity);
     }
-    console.log(this.comments);
-
-    // this.likes = post.likes;
 
   }
 
@@ -104,10 +100,6 @@ export class BlogPostEntity extends Entity implements StorableEntity<Post> {
       text: this.text,
       author: this.author,
       comments: this.comments.map((commentEntity) => commentEntity.toPOJO()),
-
-      // likes: this.likes,
-
-
     }
   }
 

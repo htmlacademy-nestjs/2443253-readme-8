@@ -3,9 +3,10 @@ import { BlogPostEntity } from "./blog-post.entity";
 import { BlogPostFactory } from './blog-post.factory';
 import { BasePostgresRepository } from '@project/data-access';
 import { PrismaClientService } from "@project/models";
-import { PaginationResult} from "@project/core";
+import { OrderBy, PaginationResult} from "@project/core";
 import { Prisma } from "@prisma/client";
 import { BlogPostQuery } from "./blog-post.query";
+import { POSTS_FOR_ONE_REQUEST } from "./blog-post.constant";
 
 
 @Injectable()
@@ -52,6 +53,16 @@ export class BlogPostRepository extends BasePostgresRepository<BlogPostEntity> {
     });
   }
 
+public async isReposted(postId: string,userId:string): Promise<number> {
+  const document = await this.client.post.count({
+    where:
+    {
+      userId,
+      originPostId: postId,
+    }
+  })
+  return document;
+}
 //Поиск по id
 public async findById(id: string): Promise<BlogPostEntity> {
 
@@ -73,11 +84,12 @@ public async findById(id: string): Promise<BlogPostEntity> {
 
   //запрос с фильтрацией
   public async find(query?: BlogPostQuery): Promise<PaginationResult<BlogPostEntity>> {
-    const skip = query?.page && query?.limit ? (query.page - 1) * query.limit : undefined;
-    const take = query?.limit;
+    const take = (query?.limit <= POSTS_FOR_ONE_REQUEST) ? query?.limit : POSTS_FOR_ONE_REQUEST;
+    const skip = query?.page && take ? (query.page - 1) * take : undefined;
     const where: Prisma.PostWhereInput = {};
     const orderBy: Prisma.PostOrderByWithRelationInput = {};
 
+    //фильтрация
     if (query?.name) {
       where.name =
         {
@@ -85,26 +97,42 @@ public async findById(id: string): Promise<BlogPostEntity> {
         }
       }
 
+      if (query?.state) {
+        where.state =
+          {
+            equals: query?.state,
+          }
+        }
+      if (query?.type) {
+        where.type =
+          {
+            equals: query?.type,
+          }
+          }
+
+      if (query?.userId) {
+      where.userId =
+        {
+          contains: query?.userId,
+        }
+        }
+
     if  (query?.teg) {
-    where.tegs = {
+      where.tegs = {
         has: query.teg,
     }
     }
+  //Сортировка
 
-    if  (query?.type) {
-      where.type = {
-        equals:query.type
-      }
-      }
-
-    if  (query?.type) {
-      where.state = {
-          equals:query.state
-      }
-      }
-
-    if (query?.sortDirection) {
-      orderBy.createdAt = query.sortDirection;
+     if (query?.sortDirection) {
+      if(query?.sortType===OrderBy.createdAt)
+        orderBy.createdAt = query.sortDirection
+      else
+      if(query?.sortType===OrderBy.countLikes)
+        orderBy.countLikes = query.sortDirection
+      else
+      if(query?.sortType===OrderBy.countComments)
+        orderBy.countComments = query.sortDirection
     }
 
     const [records, postCount] = await Promise.all([
