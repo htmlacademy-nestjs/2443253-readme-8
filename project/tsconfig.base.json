@@ -26,6 +26,7 @@
         "libs/shared/account/authentication/src/index.ts"
       ],
       "@project/blog-comment": ["libs/shared/post/blog-comment/src/index.ts"],
+      "@project/blog-like": ["libs/shared/post/blog-like/src/index.ts"],
       "@project/blog-post": ["libs/shared/post/blog-post/src/index.ts"],
       "@project/blog-user": ["libs/shared/account/blog-user/src/index.ts"],
       "@project/config": ["libs/file-vault/config/src/index.ts"],

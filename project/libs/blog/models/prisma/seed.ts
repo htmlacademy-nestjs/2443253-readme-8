@@ -4,8 +4,8 @@ import { PostState, PostType,PrismaClient } from '@prisma/client';
 const FIRST_POST_UUID = crypto.randomUUID();
 const SECOND_POST_UUID = crypto.randomUUID();
 
-const FIRST_USER_ID = crypto.randomUUID();
-const SECOND_USER_ID = crypto.randomUUID();
+const FIRST_USER_ID = '677cf3245d5261334f343a18';
+const SECOND_USER_ID = '6755746b5903856268a55d4a';
 const DEFAULT_LIKES_COUNT = 1;
 const DEFAULT_COMMENTS_COUNT = 1;
 
