@@ -10,11 +10,12 @@ export class BlogCommentFactory implements EntityFactory<BlogCommentEntity> {
     return new BlogCommentEntity(entityPlainData);
   }
 
-  public createFromDto(dto: CreateCommentDto, postId: string): BlogCommentEntity {
+  public createFromDto(dto: CreateCommentDto, postId: string,userId:string): BlogCommentEntity {
     const currentDate = new Date();
     return new BlogCommentEntity({
       ...dto,
       postId,
+      userId,
       createdAt: currentDate,
       updatedAt: currentDate,
       id:crypto.randomUUID(),

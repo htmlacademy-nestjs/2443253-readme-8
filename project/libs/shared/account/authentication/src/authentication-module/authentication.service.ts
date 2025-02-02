@@ -1,12 +1,17 @@
 import { ConflictException, HttpException, HttpStatus, Inject, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { BlogUserEntity, BlogUserRepository } from '@project/blog-user';
 import { CreateUserDto } from '../dto/create-user.dto';
-import { AUTH_USER_EXISTS, AUTH_USER_NOT_FOUND, AUTH_USER_PASSWORD_WRONG } from './authentication.constant';
+import { AUTH_USER_EXISTS, AUTH_USER_NOT_FOUND, AUTH_USER_PASSWORD_WRONG, USER_SUBSCRIBE_EXIST } from './authentication.constant';
 import { LoginUserDto } from '../dto/login-user.dto';
 import { ConfigType } from '@nestjs/config';
 import { dbConfig } from '@project/account-config';
 import { JwtService } from '@nestjs/jwt';
-import { Token, TokenPayload, User } from '@project/core';
+import { Token,  User } from '@project/core';
+import { jwtConfig } from '@project/account-config';
+import { RefreshTokenService } from '../refresh-token-module/refresh-token.service';
+import { createJWTPayload } from '@project/helpers';
+import { ChangePasswordUserDto } from '../dto/change-password.dto';
+
 
 @Injectable()
 export class AuthenticationService {
@@ -16,6 +21,8 @@ export class AuthenticationService {
     private readonly jwtService: JwtService,
     @Inject(dbConfig.KEY)
     private readonly databaseConfig: ConfigType<typeof dbConfig>,
+    @Inject(jwtConfig.KEY) private readonly jwtOptions: ConfigType<typeof jwtConfig>,
+    private readonly refreshTokenService: RefreshTokenService,
 
   ) {
     // Извлекаем настройки из конфигурации
@@ -26,10 +33,10 @@ export class AuthenticationService {
 
 //Регистрация нового пользователя
 public async register(dto: CreateUserDto): Promise<BlogUserEntity> {
-      const {email, userName, password} = dto;
+      const {email, userName, password,avatar} = dto;
 
       const blogUser = {
-        email, userName, avatar: '', passwordHash: '', subscribers:[]
+        email, userName,  avatar, passwordHash: '', subscribers:[]
       };
 
       const existUser = await this.blogUserRepository
@@ -47,10 +54,60 @@ public async register(dto: CreateUserDto): Promise<BlogUserEntity> {
 
     }
 
+//Замена пароля у пользователя
+public async changePassword(dto: ChangePasswordUserDto): Promise<BlogUserEntity> {
+  const {email, newPassword} = dto;
 
+  const existUser = await this.blogUserRepository.findByEmail(email);
+  if (! existUser) {throw new NotFoundException(AUTH_USER_NOT_FOUND);}
+
+  const userEntity = await new BlogUserEntity(existUser)
+    .setPassword(newPassword)
+    this.blogUserRepository
+    .update(userEntity);
+    return userEntity;
+
+}
+
+  //Подписаться на другого пользователя
+    public async subscribe(subscribeId:string,userId:string): Promise<BlogUserEntity> {
+
+    const existUser = await this.blogUserRepository.findById(userId);
+
+    if (! existUser) {throw new NotFoundException(AUTH_USER_NOT_FOUND);}
+
+    //Проверим есть юзер в списке подписчиков
+    const index = existUser.subscribers.indexOf(subscribeId);
+    if (index >= 0) {
+      throw new NotFoundException(USER_SUBSCRIBE_EXIST)
+    }else{
+      existUser.subscribers.push(subscribeId)
+    }
+
+    await this.blogUserRepository.update(existUser);
+    return existUser;
+
+  }
+
+
+  //Отписаться от другого пользователя
+  public async unSubscribe(unSubscribeId:string,userId:string): Promise<BlogUserEntity> {
+
+    const existUser = await this.blogUserRepository.findById(userId);
+    if (! existUser) {throw new NotFoundException(AUTH_USER_NOT_FOUND);}
+
+    const index = existUser.subscribers.indexOf(unSubscribeId);
+    if (index >= 0) {
+      existUser.subscribers.splice( index, 1 );
+    }
+
+    await this.blogUserRepository.update(existUser);
+    return existUser;
+
+  }
     public async verifyUser(dto: LoginUserDto) {
-      const {email, password} = dto;
-      const existUser = await this.blogUserRepository.findByEmail(email);
+    const {email, password} = dto;
+    const existUser = await this.blogUserRepository.findByEmail(email);
 
       if (!existUser) {
         throw new NotFoundException(AUTH_USER_NOT_FOUND);
@@ -74,19 +131,31 @@ public async register(dto: CreateUserDto): Promise<BlogUserEntity> {
     }
 
     public async createUserToken(user: User): Promise<Token> {
-      const payload: TokenPayload = {
-        sub: user.id,
-        email: user.email,
-        userName: user.userName,
-      };
+    const accessTokenPayload = createJWTPayload(user);
+    const refreshTokenPayload = { ...accessTokenPayload, tokenId: crypto.randomUUID() };
+    await this.refreshTokenService.createRefreshSession(refreshTokenPayload);
 
       try {
-        const accessToken = await this.jwtService.signAsync(payload);
-        return { accessToken };
+        const accessToken = await this.jwtService.signAsync(accessTokenPayload);
+        const refreshToken = await this.jwtService.signAsync(refreshTokenPayload, {
+          secret: this.jwtOptions.refreshTokenSecret,
+          expiresIn: this.jwtOptions.refreshTokenExpiresIn
+        });
+
+        return { accessToken, refreshToken };
       } catch (error) {
         this.logger.error('[Token generation error]: ' + error.message);
         throw new HttpException('Ошибка при создании токена.', HttpStatus.INTERNAL_SERVER_ERROR);
       }
+    }
+    public async getUserByEmail(email: string) {
+      const existUser = await this.blogUserRepository.findByEmail(email);
+
+      if (! existUser) {
+        throw new NotFoundException(`User with email ${email} not found`);
+      }
+
+      return existUser;
     }
   }
 

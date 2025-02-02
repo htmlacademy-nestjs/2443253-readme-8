@@ -3,7 +3,7 @@ POST http://localhost:4000/api/auth/register HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "user7@notfound.local",
+  "email": "user2@notfound.local",
   "userName": "Keks",
   "password": "123456"
 }
@@ -21,14 +21,34 @@ POST http://localhost:4000/api/auth/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "user7@notfound.local",
-  "password": "123456"
+  "email": "user3@notfound.local",
+  "password": "12345"
 }
 
 ###
 
-# Demo route for Pipe
-GET http://localhost:4000/api/auth/demo/1 HTTP/1.1.
-Authorization: Bearer eJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJlbWFpbCI6InVzZXJAbm90Zm91bmQubG9jYWwiLCJ1c2VyTmFtZSI6Iktla3MiLCJpYXQiOjE3MzY2ODY3ODAsImV4cCI6MTczNjY4NzA4MH0.W7BFx-Dim5IYqgZsSqltlr9oKB7PJULVv4wSnpnKP5w
+
+# Get new JWT pair
+POST http://localhost:4000/api/auth/refresh HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2Nzk0NjBmMjVmYzUwMGMzYTYyMzIzNWYiLCJlbWFpbCI6InVzZXI3QG5vdGZvdW5kLmxvY2FsIiwidXNlck5hbWUiOiJLZWtzIiwidG9rZW5JZCI6IjU3MzQ0NjE0LThkZTQtNGRhYy05Mjg2LWMzM2ExZWU1ZmJkMSIsImlhdCI6MTczNzk0OTYyNSwiZXhwIjoxNzQwNTQxNjI1fQ.YeqRWUSVQgdXvzOJ5dYIf8ko61y3nOUNwhpxFy1sqYA
+###
+
+
+# Check user token
+POST http://localhost:4000/api/auth/check HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2Nzk0NjBmMjVmYzUwMGMzYTYyMzIzNWYiLCJlbWFpbCI6InVzZXI3QG5vdGZvdW5kLmxvY2FsIiwidXNlck5hbWUiOiJLZWtzIiwiaWF0IjoxNzM4MDM3OTM2LCJleHAiOjE3MzgwMzgyMzZ9.Fje72EoNEKcyjllGRZmuUiNVqRe3I8bDEXdxj-quIdM
+
+###
+
+
+# Change user password
+POST http://localhost:4000/api/auth/changepassword HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzVlZWFjMDU2N2I5ZjhlNzMzMTAyY2UiLCJlbWFpbCI6InVzZXIzQG5vdGZvdW5kLmxvY2FsIiwidXNlck5hbWUiOiJLZWtzIiwiaWF0IjoxNzM4NDczNTY1LCJleHAiOjE3Mzg0NzM4NjV9.voOh9kjiJjtV8CsfpHcbfOr1gn8-R8vOIJtM6HKT3AM
+{
+  "email": "user3@notfound.local",
+  "password": "123456",
+  "newPassword": "12345"
+}
 
 ###

@@ -23,3 +23,5 @@ export { Subscriber } from './lib/types/subscriber.interface';
 
 export { RabbitRouting } from './lib/types/rabbit-routing.enum';
 export { OrderBy } from './lib/interfaces/orderBy.interface';
+export { JwtToken } from './lib/interfaces/jwt-token.interface';
+export { RefreshTokenPayload } from './lib/interfaces/refresh-token-payload.interface';

@@ -1,0 +1,133 @@
+# Создать нового пользователя (avatar - опционально)
+POST http://localhost:3333/api/users/createuser HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "user17@notfound.local",
+  "userName": "Keks",
+  "password": "123456",
+  "avatar":"project/apps/api/src/app/avatars/avatar1.jpg"
+}
+
+
+
+# "Залогиниться"
+POST http://localhost:3333/api/users/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "user10@notfound.local",
+  "password": "123456"
+}
+
+###
+
+# Получить новые токены
+POST http://localhost:3333/api/users/refresh HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzlmMDkxOWY4MWZmOGI4NWNjYWQ5MzIiLCJlbWFpbCI6InVzZXIxMEBub3Rmb3VuZC5sb2NhbCIsInVzZXJOYW1lIjoiS2VrcyIsImlhdCI6MTczODQ4NzYxNSwiZXhwIjoxNzM4NDg3OTE1fQ.WKSYNUdFjRFt4pADm18y4q9PqMuf_Mb2ipf-zN5yNGc
+
+###
+
+
+# Подписаться на публикации другого пользователя
+POST http://localhost:3333/api/users/subscribe/679460f25fc500c3a623235f HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzlmMDkxOWY4MWZmOGI4NWNjYWQ5MzIiLCJlbWFpbCI6InVzZXIxMEBub3Rmb3VuZC5sb2NhbCIsInVzZXJOYW1lIjoiS2VrcyIsImlhdCI6MTczODQ5MzkwOCwiZXhwIjoxNzM4NDk0MjA4fQ.SNGS9HpGkkhQys4uRWDShW2z06WXA2YCJXtJpqdfbdY
+
+
+###
+
+# Отписаться на публикации другого пользователя
+POST http://localhost:3333/api/users/unsubscribe/679460f25fc500c3a623235f HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzlmMDkxOWY4MWZmOGI4NWNjYWQ5MzIiLCJlbWFpbCI6InVzZXIxMEBub3Rmb3VuZC5sb2NhbCIsInVzZXJOYW1lIjoiS2VrcyIsImlhdCI6MTczODQ4ODg1NSwiZXhwIjoxNzM4NDg5MTU1fQ.oF_YIY6IUYdh1MpeennEAoCr_JMh7Z1ylNSxwePOLPk
+
+
+###
+# Поменять пароль у пользователя
+POST http://localhost:3333/api/users/changepassword HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzVlZWFjMDU2N2I5ZjhlNzMzMTAyY2UiLCJlbWFpbCI6InVzZXIzQG5vdGZvdW5kLmxvY2FsIiwidXNlck5hbWUiOiJLZWtzIiwiaWF0IjoxNzM4NDc0NjQ2LCJleHAiOjE3Mzg0NzQ5NDZ9.dB5jNXai8Rdf-9NlI31d3Ql2IakuPiVsiIbvL59Kn9s
+{
+  "email": "user3@notfound.local",
+  "password": "12345",
+  "newPassword": "123456"
+}
+
+
+# Разослать уведомления пользователям о новых публикациях
+POST http://localhost:3333/api/users/notifynewposts HTTP/1.1
+
+
+
+//Публикации   Публикации   Публикации   Публикации   Публикации   Публикации   Публикации   Публикации
+
+
+
+
+# Создать новый пост
+POST http://localhost:3333/api/blog HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzlmMDkxOWY4MWZmOGI4NWNjYWQ5MzIiLCJlbWFpbCI6InVzZXIxMEBub3Rmb3VuZC5sb2NhbCIsInVzZXJOYW1lIjoiS2VrcyIsImlhdCI6MTczODQ5MzkwOCwiZXhwIjoxNzM4NDk0MjA4fQ.SNGS9HpGkkhQys4uRWDShW2z06WXA2YCJXtJpqdfbdY
+Content-Type: application/json
+
+{
+  "tegs":[],
+  "userId":"679460f25fc500c3a623235f",
+  "state":"published",
+  "repost":false,
+  "type":"text",
+  "name": "Публикация пользовалеля User10 публикация Тестовая публикация Тестовая публикация Тестовая публикация "
+  }
+###
+
+# Удалить публикация по id
+DELETE http://localhost:3333/api/blog/e6d94593-3327-428f-b3fa-db3a31956d6f HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2Nzk0NjBmMjVmYzUwMGMzYTYyMzIzNWYiLCJlbWFpbCI6InVzZXI3QG5vdGZvdW5kLmxvY2FsIiwidXNlck5hbWUiOiJLZWtzIiwiaWF0IjoxNzM4Mzk0MDA5LCJleHAiOjE3MzgzOTQzMDl9.sBikNPc9oi5iX79NA8_C7oFCDRCWA4dk1mRcfgitfUo
+Content-Type: application/json
+
+###
+# Обновить публикацию по id
+
+PATCH http://localhost:3333/api/blog/5dc2039b-054d-4969-8dc8-443259c1fc69 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzVlZThhMjU2N2I5ZjhlNzMzMTAyYzkiLCJlbWFpbCI6InVzZXIyQG5vdGZvdW5kLmxvY2FsIiwidXNlck5hbWUiOiJLZWtzIiwiaWF0IjoxNzM4Mzk3NTc5LCJleHAiOjE3MzgzOTc4Nzl9.ASsepj-nEQd2VpWTKSWw-_SQxyGk_95y7xPUZsvslrM
+Content-Type: application/json
+
+{
+  "name":"New name2 New name2 New name2 New name2 New name2 New name2 New name2 New name2 ",
+  "state": "draft"
+}
+
+###
+# Создать репост публикации с определенным id
+POST http://localhost:3333/api/blog/5dc2039b-054d-4969-8dc8-443259c1fc69 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzVlZThhMjU2N2I5ZjhlNzMzMTAyYzkiLCJlbWFpbCI6InVzZXIyQG5vdGZvdW5kLmxvY2FsIiwidXNlck5hbWUiOiJLZWtzIiwiaWF0IjoxNzM4Mzk3NjQxLCJleHAiOjE3MzgzOTc5NDF9.iRKRJt7GnRjPi8_nzKXF8p0CxvP31u0d-xtLyeu6raY
+Content-Type: application/json
+
+
+###
+# Получить все публикации
+GET http://localhost:3333/api/blog HTTP/1.1
+
+###
+
+
+# Получить публикацию по id (просмотр детальной информации)
+
+GET http://localhost:3333/api/blog/5dc2039b-054d-4969-8dc8-443259c1fc69 HTTP/1.1
+
+###
+
+
+# Получить публикации с сортировкой и фильтрацией
+//фильтрация по тегам (teg=), по заголовке (name=) - (достаточно содержания одного слова),
+//по userId =
+//сортировка по дате создания, количеству лайков, количеству комментариев sortType=countLikes|countComments|createdAt
+//направление сортировки sortDirection=decs|asc
+GET http://localhost:3333/api/blog?userId=679460f25fc500c3a623235f HTTP/1.1
+
+###
+
+# Получить контентную ленту публикаций на подписанных пользователей с сортировкой и фильтрацией
+GET http://localhost:3333/api/blog/lenta? HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzlmMDkxOWY4MWZmOGI4NWNjYWQ5MzIiLCJlbWFpbCI6InVzZXIxMEBub3Rmb3VuZC5sb2NhbCIsInVzZXJOYW1lIjoiS2VrcyIsImlhdCI6MTczODQ5MzkwOCwiZXhwIjoxNzM4NDk0MjA4fQ.SNGS9HpGkkhQys4uRWDShW2z06WXA2YCJXtJpqdfbdY
+Content-Type: application/json

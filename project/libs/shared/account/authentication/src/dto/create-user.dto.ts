@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsString } from "class-validator";
+import { IsEmail, IsOptional, IsString } from "class-validator";
 import { AuthenticationValidateMessage } from "../authentication-module/authentication.constant";
 
 
@@ -17,6 +17,14 @@ export class CreateUserDto {
   })
   @IsString()
   public userName: string;
+
+  @ApiProperty({
+    description:'User avatar',
+    example: `C:Readme\\2443253-readme-8\\project\\apps\\api\\src\\app\\avatars\\avatar1.jpg`
+  })
+  @IsOptional()
+  @IsString()
+  public avatar?: string;
 
   @ApiProperty({
     description:'User password',

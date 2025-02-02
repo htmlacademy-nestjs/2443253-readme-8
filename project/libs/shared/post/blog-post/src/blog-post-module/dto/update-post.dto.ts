@@ -44,6 +44,14 @@ export class UpdatePostDto {
   repost?:boolean;
 //--------------------------------------
   @ApiProperty({
+    description: 'Признак новой  публикации. Для вновь созданных true, после рассылки уведомлений о новых публикациях - false',
+    example: 'true'
+  })
+  @IsBoolean()
+  @IsOptional()
+  new:boolean;
+//--------------------------------------
+  @ApiProperty({
     description: 'Тип публикации  video | text | quote | foto | reference',
     example: 'text'
   })

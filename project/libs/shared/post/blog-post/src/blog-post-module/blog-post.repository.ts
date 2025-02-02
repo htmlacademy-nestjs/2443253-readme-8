@@ -53,16 +53,7 @@ export class BlogPostRepository extends BasePostgresRepository<BlogPostEntity> {
     });
   }
 
-public async isReposted(postId: string,userId:string): Promise<number> {
-  const document = await this.client.post.count({
-    where:
-    {
-      userId,
-      originPostId: postId,
-    }
-  })
-  return document;
-}
+
 //Поиск по id
 public async findById(id: string): Promise<BlogPostEntity> {
 
@@ -81,8 +72,18 @@ public async findById(id: string): Promise<BlogPostEntity> {
     return this.createEntityFromDocument(document);
 
   }
+  public async findNew(): Promise<string> {
+    const newPosts = await this.client.post.findMany(
+      {where : {new : true}}
+    )
+    let newNames = "";
+    for(const post of newPosts) {
+      newNames = post.name + ", " + newNames;
+    }
+    return newNames;
+  }
 
-  //запрос с фильтрацией
+  //запрос с фильтрацией и пагинацией
   public async find(query?: BlogPostQuery): Promise<PaginationResult<BlogPostEntity>> {
     const take = (query?.limit <= POSTS_FOR_ONE_REQUEST) ? query?.limit : POSTS_FOR_ONE_REQUEST;
     const skip = query?.page && take ? (query.page - 1) * take : undefined;
@@ -120,6 +121,12 @@ public async findById(id: string): Promise<BlogPostEntity> {
     if  (query?.teg) {
       where.tegs = {
         has: query.teg,
+      }
+    }
+
+    if  (query?.subscribtions) {
+      where.userId = {
+        in: query.subscribtions,
     }
     }
   //Сортировка

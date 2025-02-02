@@ -14,6 +14,7 @@ export type Post = {
 
   state:PostState;//Состояние публикации draft|published
   repost:boolean;//Репост
+  new:boolean;//новая публикация
   originPostId:string;//Идентификатор поста, который является родителем
 
   type:PostType;//тип публикации video|text|quote|foto|reference

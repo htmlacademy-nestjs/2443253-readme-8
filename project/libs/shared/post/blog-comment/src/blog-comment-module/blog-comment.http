@@ -6,11 +6,10 @@ GET http://localhost:3000/api/posts/246aed1a-3f23-4191-966c-71cedcd62366/comment
 
 ###
 # Создать новый комментарий для публикации с определенным id
-POST http://localhost:3000/api/posts/246aed1a-3f23-4191-966c-71cedcd62366/comments HTTP/1.1
+POST http://localhost:3000/api/posts/comments/246aed1a-3f23-4191-966c-71cedcd62366 HTTP/1.1
 Content-Type: application/json
 
 {
   "message": "Еще одна отличная публикация",
-  "userId": "65990102bb965b742900ba59"
 }
 

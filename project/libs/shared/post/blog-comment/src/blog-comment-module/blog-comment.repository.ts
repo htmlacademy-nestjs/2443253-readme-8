@@ -6,6 +6,7 @@ import { Comment } from '@project/core';
 import { BlogCommentEntity } from './blog-comment.entity';
 import { BlogCommentFactory } from './blog-comment.factory';
 import { BasePostgresRepository } from '@project/data-access';
+import { COMMENTS_FOR_ONE_REQUEST } from './blog-comment.constant';
 
 @Injectable()
 export class BlogCommentRepository extends BasePostgresRepository<BlogCommentEntity, Comment> {
@@ -26,20 +27,26 @@ export class BlogCommentRepository extends BasePostgresRepository<BlogCommentEnt
       });
     }
 
+    private async updateCountComments(postId: string): Promise<void> {
+
+      //Посчитаем комментарии
+      await this.client.post.update({
+        where: { id: postId },
+        data: {
+        countComments : await this.getCommentCount(postId),
+      }
+    });
+
+
+    }
+
   public async save(entity: BlogCommentEntity): Promise<void> {
     const record = await this.client.comment.create({
       data: {...entity.toPOJO()}
     });
 
     entity.id = record.id;
-
-    //Посчитаем комментарии
-    await this.client.post.update({
-      where: { id: record.postId },
-      data: {
-      countComments : await this.getCommentCount(record.postId),
-      }
-    });
+    this.updateCountComments(entity.postId);
 
   }
 
@@ -57,19 +64,24 @@ export class BlogCommentRepository extends BasePostgresRepository<BlogCommentEnt
     return this.createEntityFromDocument(document);
   }
 
-  public async deleteById(id: string): Promise<void> {
+  public async deleteById(id: string, postId: string): Promise<void> {
     await this.client.comment.delete({
       where: {
         id,
       }
     });
+    this.updateCountComments(postId);
   }
 
   public async findByPostId(postId: string): Promise<BlogCommentEntity[]> {
+
+    const take = COMMENTS_FOR_ONE_REQUEST;
+
     const records = await this.client.comment.findMany({
-      where: {
+      where:{
         postId
-      }
+      },
+      take,
     });
 
     return records.map(record => this.createEntityFromDocument(record))
