@@ -5,7 +5,6 @@ export interface PostFilter {
   id?: string;
   name?: string;
   state?: PostState;
-  // tegs?: string[];
 }
 
 export function postFilterToPrismaFilter(filter: PostFilter): Prisma.PostWhereInput | undefined {
@@ -27,9 +26,6 @@ export function postFilterToPrismaFilter(filter: PostFilter): Prisma.PostWhereIn
     prismaFilter = { state: filter.state };
   }
 
-  // if (filter.tegs) {
-  //   prismaFilter = { tegs: [...filter.tegs] };
-  // }
 
   return prismaFilter;
 }

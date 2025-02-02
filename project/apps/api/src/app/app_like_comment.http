@@ -1,0 +1,46 @@
+# Login user by email and password
+POST http://localhost:3333/api/users/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "user11@notfound.local",
+  "password": "123456"
+}
+
+###
+
+# Получить все комментарии для публикации
+GET http://localhost:3333/api/comment/b769dc88-b2e7-454c-b81d-bb60b8dd0c0b HTTP/1.1
+
+###
+
+
+# Создать новый комментарий для публикации с определенным id
+POST http://localhost:3333/api/comment/b769dc88-b2e7-454c-b81d-bb60b8dd0c0b HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzVlZThhMjU2N2I5ZjhlNzMzMTAyYzkiLCJlbWFpbCI6InVzZXIyQG5vdGZvdW5kLmxvY2FsIiwidXNlck5hbWUiOiJLZWtzIiwiaWF0IjoxNzM4NDE1Njk4LCJleHAiOjE3Mzg0MTU5OTh9.KxBbMYUENd9yF9uqLs1aFntExH_rvdQ2Ea4SpR6rl_Q
+Content-Type: application/json
+
+
+{
+  "message": "Еще одна отличная публикация 2"
+}
+
+
+# Удалить свой комментарий с определенным id
+DELETE http://localhost:3333/api/comment/fea8975a-c50d-4a90-969f-b8b1fc5bbb72 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzVlZThhMjU2N2I5ZjhlNzMzMTAyYzkiLCJlbWFpbCI6InVzZXIyQG5vdGZvdW5kLmxvY2FsIiwidXNlck5hbWUiOiJLZWtzIiwiaWF0IjoxNzM4NDExODEwLCJleHAiOjE3Mzg0MTIxMTB9.AZwHlf5KCgG1-I0WplYFMiZh1Zi5GTBGCklk3sujPLA
+Content-Type: application/json
+
+
+
+# Поставить лайк для публикации с определенным id
+POST http://localhost:3333/api/like/9d778e15-d8c8-4002-b12c-76bbb76d7ea4 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzlmMjY5MzFlZDBiMzE3OGZiMTYxMWEiLCJlbWFpbCI6InVzZXIxMUBub3Rmb3VuZC5sb2NhbCIsInVzZXJOYW1lIjoiS2VrcyIsImlhdCI6MTczODQ4NDI0NSwiZXhwIjoxNzM4NDg0NTQ1fQ.e3iqDNDQTln9rX39Y1KSoVNfMy24NhiJnWwx7a1Vhl4
+Content-Type: application/json
+
+
+
+# Удалить лайк для публикации с определенным id
+DELETE http://localhost:3333/api/like/9d778e15-d8c8-4002-b12c-76bbb76d7ea4 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzlmMjY5MzFlZDBiMzE3OGZiMTYxMWEiLCJlbWFpbCI6InVzZXIxMUBub3Rmb3VuZC5sb2NhbCIsInVzZXJOYW1lIjoiS2VrcyIsImlhdCI6MTczODQ4NDI0NSwiZXhwIjoxNzM4NDg0NTQ1fQ.e3iqDNDQTln9rX39Y1KSoVNfMy24NhiJnWwx7a1Vhl4
+Content-Type: application/json

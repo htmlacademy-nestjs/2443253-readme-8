@@ -1,4 +1,4 @@
-import { IsMongoId, IsNotEmpty, IsString, MaxLength, MinLength} from 'class-validator';
+import { IsNotEmpty, IsString, MaxLength, MinLength} from 'class-validator';
 import { BlogCommentValidateMessage, COMMENT_MAX_LENGTH, COMMENT_MIN_LENGTH } from '../blog-comment.constant';
 export class CreateCommentDto {
   @IsString()
@@ -6,7 +6,4 @@ export class CreateCommentDto {
   @MinLength(COMMENT_MIN_LENGTH)
   @MaxLength(COMMENT_MAX_LENGTH)
   message: string;
-  @IsString()
-  @IsMongoId({ message: BlogCommentValidateMessage.InvalidID })
-  userId: string;
 }

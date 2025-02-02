@@ -34,6 +34,17 @@ export class BlogLikeRepository extends BasePostgresRepository<BlogLikeEntity, L
     return await this.client.like.count({ where });
   }
 
+  private async updateCountLikes(postId: string): Promise<void> {
+
+      //Посчитаем количество лайков по посту и запишем значение в пост
+      await this.client.post.update({
+        where: { id: postId },
+        data: {
+        countLikes : await this.getLikeCount(postId),
+      }
+      });
+
+  }
   //Ставим лайк
   public async save(entity: BlogLikeEntity): Promise<void> {
    const likeExists = this.likeExists(entity.postId,entity.userId);
@@ -44,14 +55,7 @@ export class BlogLikeRepository extends BasePostgresRepository<BlogLikeEntity, L
       });
 
       entity.id = record.id;
-
-      //Посчитаем количество лайков по посту и запишем значение в пост
-      await this.client.post.update({
-        where: { id: record.postId },
-        data: {
-        countLikes : await this.getLikeCount(record.postId),
-      }
-      });
+      this.updateCountLikes(entity.postId);
     } else{
       throw new NotFoundException(`Like for post ${entity.postId} and user ${entity.userId} already exists`);
     }
@@ -70,8 +74,9 @@ export class BlogLikeRepository extends BasePostgresRepository<BlogLikeEntity, L
         where: {
           id: record.id,
         }    });
+        this.updateCountLikes(postId);
     } catch {
-      throw new NotFoundException(`Like for post ${postId} and user ${userId} noy exists`);
+      throw new NotFoundException(`Like for post ${postId} and user ${userId} not exists`);
     }
 
   }

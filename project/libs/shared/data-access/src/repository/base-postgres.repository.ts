@@ -32,7 +32,7 @@ DocumentType = ReturnType<T['toPOJO']>
     throw new Error('Not implemented');
   }
 
-  public async deleteById(id: T['id']): Promise<void> {
+  public async deleteById(id: T['id'], id2?:T['id']): Promise<void> {
     throw new Error('Not implemented');
   }
 }

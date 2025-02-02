@@ -18,9 +18,10 @@ export class BlogPostFactory implements EntityFactory<BlogPostEntity> {
     entity.userId = repost ? newUserId: dto.userId;
     entity.countLikes = 0;
     entity.countComments = 0;
-    entity.originPostId = repost ? originPostId : dto.userId;
+    entity.originPostId = repost ? originPostId : "";
     entity.state = dto.state;
-    entity.repost = dto.repost;
+    entity.repost = repost;
+    entity.new = repost ? dto.new : true;
     entity.type = dto.type;
     entity.name = dto.name;
 

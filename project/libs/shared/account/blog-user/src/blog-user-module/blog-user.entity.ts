@@ -6,6 +6,7 @@ import { SALT_ROUNDS } from './blog-user.constant';
 export class BlogUserEntity extends Entity implements StorableEntity<AuthUser> {
   public email: string;
   public userName: string;
+  public avatar: string;
   public passwordHash: string;
   public subscribers: string[];
 
@@ -23,8 +24,10 @@ export class BlogUserEntity extends Entity implements StorableEntity<AuthUser> {
     this.id = user.id ?? '';
     this.email = user.email;
     this.userName = user.userName;
+    this.avatar = user.avatar;
     this.subscribers = user.subscribers;
     this.passwordHash = user.passwordHash;
+    this.subscribers = user.subscribers;
   }
 
   public toPOJO(): AuthUser {
@@ -32,8 +35,9 @@ export class BlogUserEntity extends Entity implements StorableEntity<AuthUser> {
       id: this.id,
       email: this.email,
       userName: this.userName,
+      avatar: this.avatar,
       passwordHash: this.passwordHash,
-      subscribers:[]
+      subscribers:this.subscribers
     }
   }
   public async setPassword(password: string): Promise<BlogUserEntity> {

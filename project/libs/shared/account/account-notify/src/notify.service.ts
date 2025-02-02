@@ -22,4 +22,11 @@ export class NotifyService {
       { ...dto }
     );
   }
+  public async notifyAboutNewPosts(publications: string) {
+    return this.rabbitClient.publish(
+      this.rabbiOptions.exchange,
+      RabbitRouting.NewPublications,
+      publications
+    );
+  }
 }

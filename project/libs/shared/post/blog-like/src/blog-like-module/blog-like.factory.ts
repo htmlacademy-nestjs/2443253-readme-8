@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { Like, EntityFactory } from '@project/core';
 import { BlogLikeEntity } from './blog-like.entity';
-import { CreateLikeDto } from './dto/create-like.dto';
+
 
 @Injectable()
 export class BlogLikeFactory implements EntityFactory<BlogLikeEntity> {
@@ -10,10 +10,10 @@ export class BlogLikeFactory implements EntityFactory<BlogLikeEntity> {
     return new BlogLikeEntity(entityPlainData);
   }
 
-  public static createFromDto(dto: CreateLikeDto, postId: string): BlogLikeEntity {
+  public static createLikeEntity(userId:string, postId: string): BlogLikeEntity {
     const currentDate = new Date();
     return new BlogLikeEntity({
-      ...dto,
+      userId,
       postId,
       createdAt: currentDate,
       id:crypto.randomUUID(),

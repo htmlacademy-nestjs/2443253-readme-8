@@ -24,6 +24,8 @@ model Post {
   countComments Int
   state       PostState @map("post_state")//Состояние публикации
   repost      Boolean
+  new         Boolean @default(true)
+
   originPostId String @map("originpost_id")
   type        PostType @map("post_type")
 

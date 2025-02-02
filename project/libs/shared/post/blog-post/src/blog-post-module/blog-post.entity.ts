@@ -20,6 +20,7 @@ export class BlogPostEntity extends Entity implements StorableEntity<Post> {
 
   public state:PostState;
   public repost: boolean;
+  public new: boolean;
   public originPostId:string;
 
   public type:PostType;//тип публикации
@@ -54,6 +55,7 @@ export class BlogPostEntity extends Entity implements StorableEntity<Post> {
 
     this.state = post.state;
     this.repost = post.repost;
+    this.new = post.new;
     this.originPostId = post.originPostId;
 
     this.type = post.type;
@@ -90,6 +92,7 @@ export class BlogPostEntity extends Entity implements StorableEntity<Post> {
 
       state : this.state,
       repost : this.repost,
+      new : this.new,
       originPostId : this.originPostId,
 
       type: this.type,

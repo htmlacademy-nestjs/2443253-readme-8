@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsIn,  IsMongoId,  IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsIn,  IsMongoId,  IsNumber, IsOptional, IsString } from 'class-validator';
 
 import { OrderBy, PostState, PostType, SortDirection } from '@project/core';
 
@@ -59,4 +59,11 @@ export class BlogPostQuery {
   @Transform(({ value }) => +value || DEFAULT_PAGE_COUNT)
   @IsOptional()
   public page: number = DEFAULT_PAGE_COUNT;
+
+
+  //Запрос по пользователю
+  @IsArray()
+  @IsOptional()
+  public subscribtions?: string[];
+
 }

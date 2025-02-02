@@ -1,4 +1,5 @@
-export const MAX_COMMENTS_COUNT = 50;
+export const COMMENTS_FOR_ONE_REQUEST = 50;
+
 
 export const BlogCommentValidateMessage = {
   MessageIsEmpty: 'The message is empty',

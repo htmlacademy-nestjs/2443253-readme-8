@@ -4,13 +4,13 @@ import { BlogCommentService } from './blog-comment.service';
 import { CommentRdo } from './rdo/comment.rdo';
 import { fillDto } from '@project/helpers';
 
-@Controller('posts/:postId/comments')
+@Controller('posts/comments')
 export class BlogCommentController {
   constructor(
     private readonly blogCommentService: BlogCommentService,
   ) {}
 
-  @Get('/')
+  @Get('/:postId')
   public async show(@Param('postId') postId: string) {
     const comments = await this.blogCommentService.getComments(postId);
     return fillDto(CommentRdo, comments.map((comment) => comment.toPOJO()));

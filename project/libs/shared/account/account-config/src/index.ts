@@ -7,3 +7,4 @@ export { getMongooseOptions } from './configurations/mongodb/get-mongoose-option
 export { getJwtOptions } from './get-jwt-options';
 
 export { default as rabbitConfig } from './configurations/rabbit.config';
+export { default as jwtConfig} from './configurations/jwt.config';
