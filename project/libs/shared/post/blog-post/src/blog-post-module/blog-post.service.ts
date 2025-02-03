@@ -28,7 +28,12 @@ export class BlogPostService {
   }
 
   public async getAllPosts(query?: BlogPostQuery,user?:BlogUserEntity): Promise<PaginationResult<BlogPostEntity>> {
-    query.subscribtions = [...user.subscribers,user.id]
+    if (user?.subscribers){
+      query.subscribtions = [...user.subscribers]
+    }
+    if (user?.id){
+      query.subscribtions.push(user.id)
+    }
     return await this.blogPostRepository.find(query);
   }
 

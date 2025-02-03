@@ -6,7 +6,7 @@ import mongoConfig from "./configurations/mongo.config";
 import jwtConfig from "./configurations/jwt.config";
 import rabbitConfig from "./configurations/rabbit.config";
 
-const ENV_USERS_FILE_PATH = 'apps/account/account.env';
+const ENV_USERS_FILE_PATH = 'apps/account/.env';
 
 @Module({
   imports: [

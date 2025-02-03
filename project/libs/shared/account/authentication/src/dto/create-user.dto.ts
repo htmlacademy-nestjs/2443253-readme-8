@@ -6,7 +6,7 @@ import { AuthenticationValidateMessage } from "../authentication-module/authenti
 export class CreateUserDto {
   @ApiProperty({
     description:'User email',
-    example: 'user@gmail.com'
+    example: 'user10@notfound.local'
   })
   @IsEmail({}, { message: AuthenticationValidateMessage.EmailNotValid })
   public email: string;
@@ -19,16 +19,17 @@ export class CreateUserDto {
   public userName: string;
 
   @ApiProperty({
-    description:'User avatar',
-    example: `C:Readme\\2443253-readme-8\\project\\apps\\api\\src\\app\\avatars\\avatar1.jpg`
+    description:'User avatar file',
+    example: `project/apps/api/src/app/avatars/avatar1.jpg`
+
   })
+  @ApiProperty({type : 'string',format: 'binary' })
   @IsOptional()
-  @IsString()
-  public avatar?: string;
+  public avatarFile?: unknown;
 
   @ApiProperty({
     description:'User password',
-    example: '12345'
+    example: '123456'
   })
   @IsString()
   public password: string;

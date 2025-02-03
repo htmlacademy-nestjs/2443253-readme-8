@@ -1,8 +1,8 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseFilePipeBuilder, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { CreateUserDto } from '../dto/create-user.dto';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AuthenticationResponseMessage } from './authentication.constant';
+import { ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AuthenticationResponseMessage, AVATAR_FILE, MIME_TYPES, MAX_FILE_SIZE } from './authentication.constant';
 import { LoggedUserRdo } from '../rdo/logged-user.rdo';
 import { UserRdo } from '../rdo/user.rdo';
 import { MongoIdValidationPipe } from '@project/pipes';
@@ -14,7 +14,8 @@ import { JwtRefreshGuard } from '../guards/jwt-refresh.guard';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { RequestWithTokenPayload } from './request-with-token-payload.interface';
 import { ChangePasswordUserDto } from '../dto/change-password.dto';
-
+import { FileInterceptor } from '@nestjs/platform-express';
+import 'multer';
 @ApiTags('authentication')
 @Controller('auth')
 export class AuthenticationController {
@@ -31,9 +32,24 @@ export class AuthenticationController {
   status: HttpStatus.CONFLICT,
   description: AuthenticationResponseMessage.UserExist,
 })
+@ApiConsumes('multipart/form-data')
+
+@UseInterceptors(FileInterceptor(AVATAR_FILE))
 @Post('register')
-  public async create(@Body() dto: CreateUserDto) {
-    const newUser = await this.authService.register(dto);
+  public async create(
+    @Body() dto: CreateUserDto,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+      .addFileTypeValidator({
+        fileType: MIME_TYPES.join('|'),
+      })
+      .addMaxSizeValidator({ maxSize: MAX_FILE_SIZE })
+      .build({
+        errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+      })
+    ) avatarFile?: Express.Multer.File
+    ) {
+    const newUser = await this.authService.register(dto,avatarFile);
     const { email, userName } = newUser;
     await this.notifyService.registerSubscriber({ email, userName });
     return newUser.toPOJO();

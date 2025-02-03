@@ -6,8 +6,11 @@ import { CheckAuthGuard } from './guards/check-auth.guard';
 import { BlogPostQuery, CreatePostDto, UpdatePostDto } from '@project/blog-post';
 import { ApplicationServiceURL } from './app.config';
 import { InjectUserIdInterceptor } from '@project/interceptors';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ApiOperations } from './api.const';
 
 
+@ApiBearerAuth()
 @Controller('blog')
 @UseFilters(AxiosExceptionFilter)
 export class BlogController {
@@ -16,7 +19,7 @@ export class BlogController {
     private readonly httpService: HttpService,
   ) {}
 
-
+  @ApiOperation({ summary: ApiOperations.GetLenta })
   @UseGuards(CheckAuthGuard)
   @UseInterceptors(InjectUserIdInterceptor)
   @Get('lenta/?')
@@ -37,6 +40,7 @@ export class BlogController {
     return data;
 
   }
+  @ApiOperation({ summary: ApiOperations.CreateNewPost })
   @UseGuards(CheckAuthGuard)
   @UseInterceptors(InjectUserIdInterceptor)
   @Post('/')
@@ -45,6 +49,7 @@ export class BlogController {
     return data;
   }
 
+  @ApiOperation({ summary: ApiOperations.DeletePostById })
   @UseGuards(CheckAuthGuard)
   @UseInterceptors(InjectUserIdInterceptor)
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -54,6 +59,7 @@ export class BlogController {
     return data;
   }
 
+  @ApiOperation({ summary: ApiOperations.PatchPostById })
   @UseGuards(CheckAuthGuard)
   @UseInterceptors(InjectUserIdInterceptor)
   @Patch('/:id')
@@ -63,7 +69,7 @@ export class BlogController {
   }
 
 
-
+  @ApiOperation({ summary: ApiOperations.CreateRepostById })
   @UseGuards(CheckAuthGuard)
   @UseInterceptors(InjectUserIdInterceptor)
   @Post('/:id')
