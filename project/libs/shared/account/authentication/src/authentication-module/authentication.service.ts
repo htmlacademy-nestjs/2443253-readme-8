@@ -1,16 +1,19 @@
-import { ConflictException, HttpException, HttpStatus, Inject, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, HttpException, HttpStatus, Inject, Injectable, InternalServerErrorException, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { BlogUserEntity, BlogUserRepository } from '@project/blog-user';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { AUTH_USER_EXISTS, AUTH_USER_NOT_FOUND, AUTH_USER_PASSWORD_WRONG, USER_SUBSCRIBE_EXIST } from './authentication.constant';
 import { LoginUserDto } from '../dto/login-user.dto';
 import { ConfigType } from '@nestjs/config';
-import { dbConfig } from '@project/account-config';
+import { applicationConfig, dbConfig } from '@project/account-config';
 import { JwtService } from '@nestjs/jwt';
 import { Token,  User } from '@project/core';
 import { jwtConfig } from '@project/account-config';
 import { RefreshTokenService } from '../refresh-token-module/refresh-token.service';
 import { createJWTPayload } from '@project/helpers';
 import { ChangePasswordUserDto } from '../dto/change-password.dto';
+import { FileUploaderService } from '@project/file-uploader';
+
+
 
 
 @Injectable()
@@ -18,11 +21,14 @@ export class AuthenticationService {
   private readonly logger = new Logger(AuthenticationService.name);
   constructor(
     private readonly blogUserRepository: BlogUserRepository,
+    private readonly fileUploaderService: FileUploaderService,
     private readonly jwtService: JwtService,
     @Inject(dbConfig.KEY)
     private readonly databaseConfig: ConfigType<typeof dbConfig>,
     @Inject(jwtConfig.KEY) private readonly jwtOptions: ConfigType<typeof jwtConfig>,
     private readonly refreshTokenService: RefreshTokenService,
+    @Inject(applicationConfig.KEY) private readonly applicationsOptions: ConfigType<typeof applicationConfig>,
+
 
   ) {
     // Извлекаем настройки из конфигурации
@@ -32,11 +38,11 @@ export class AuthenticationService {
 
 
 //Регистрация нового пользователя
-public async register(dto: CreateUserDto): Promise<BlogUserEntity> {
-      const {email, userName, password,avatar} = dto;
+public async register(dto: CreateUserDto, avatarFile?: Express.Multer.File): Promise<BlogUserEntity> {
+      const {email, userName, password} = dto;
 
       const blogUser = {
-        email, userName,  avatar, passwordHash: '', subscribers:[]
+        email, userName,  avatar: '', passwordHash: '', subscribers:[]
       };
 
       const existUser = await this.blogUserRepository
@@ -45,7 +51,14 @@ public async register(dto: CreateUserDto): Promise<BlogUserEntity> {
       if (existUser) {
         throw new ConflictException(AUTH_USER_EXISTS);
       }
-
+      if (avatarFile) {
+        try {
+          const fileRdo = await this.fileUploaderService.writeFile(avatarFile,this.applicationsOptions.avatarUploadPath);
+          blogUser.avatar = fileRdo.path;
+        } catch  {
+          throw new InternalServerErrorException(`File upload error!`);
+        }
+      }
       const userEntity = await new BlogUserEntity(blogUser)
         .setPassword(password)
         this.blogUserRepository

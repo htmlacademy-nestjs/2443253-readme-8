@@ -10,9 +10,12 @@ import { NotifyModule } from '@project/account-notify';
 import { LocalStrategy } from '../strategies/local.strategy';
 import { JwtRefreshStrategy } from '../strategies/jwt-refresh.strategy';
 import { RefreshTokenModule } from '../refresh-token-module/refresh-token.module';
+import { FileUploaderModule,FileUploaderService} from '@project/file-uploader';
+
 
 @Module({
   imports: [BlogUserModule,
+    FileUploaderModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: getJwtOptions,
@@ -22,7 +25,7 @@ import { RefreshTokenModule } from '../refresh-token-module/refresh-token.module
   ],
   controllers: [AuthenticationController],
   providers: [AuthenticationService,
-    JwtAccessStrategy,LocalStrategy,JwtRefreshStrategy,
+    JwtAccessStrategy,LocalStrategy,JwtRefreshStrategy,FileUploaderService
   ]
 
 })

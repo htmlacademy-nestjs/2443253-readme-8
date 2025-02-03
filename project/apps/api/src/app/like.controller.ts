@@ -5,9 +5,11 @@ import { AxiosExceptionFilter } from './app-filters/axios-exception.filter';
 import { CheckAuthGuard } from './guards/check-auth.guard';
 import { ApplicationServiceURL } from './app.config';
 import { InjectUserIdInterceptor } from '@project/interceptors';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ApiOperations } from './api.const';
 
 
-
+@ApiBearerAuth()
 @Controller('like')
 @UseFilters(AxiosExceptionFilter)
 export class LikeController {
@@ -16,7 +18,7 @@ export class LikeController {
     private readonly httpService: HttpService,
   ) {}
 
-
+  @ApiOperation({ summary: ApiOperations.LikeOn })
   @UseGuards(CheckAuthGuard)
   @UseInterceptors(InjectUserIdInterceptor)
   @Post('/:id')
@@ -25,6 +27,7 @@ export class LikeController {
     return data;
   }
 
+  @ApiOperation({ summary: ApiOperations.LikeOut })
   @UseGuards(CheckAuthGuard)
   @UseInterceptors(InjectUserIdInterceptor)
   @Delete('/:id')

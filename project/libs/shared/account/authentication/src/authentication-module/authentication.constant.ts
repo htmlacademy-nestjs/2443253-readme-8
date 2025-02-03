@@ -17,3 +17,6 @@ export const AuthenticationResponseMessage = {
 export const AuthenticationValidateMessage = {
   EmailNotValid: 'The email is not valid',
 } as const;
+export const AVATAR_FILE = 'avatarFile';
+export const MIME_TYPES = ['image/jpg', 'image/jpeg', 'image/png']
+export const MAX_FILE_SIZE = 500*1024;
