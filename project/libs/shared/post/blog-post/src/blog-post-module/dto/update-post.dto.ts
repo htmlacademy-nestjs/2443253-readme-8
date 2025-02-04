@@ -16,10 +16,10 @@ import { TEGS_MAX_COUNT, POST_MIN_LENGTH, POST_MAX_LENGTH, ANNOUNCE_MIN_LENGTH, 
 export class UpdatePostDto {
 
 
-  @ApiProperty({
-    description: 'Теги для публикации',
-    example: '[#Toyota,#Honda]'
-  })
+  // @ApiProperty({
+  //   description: 'Теги для публикации',
+  //   example: '[#Toyota,#Honda]'
+  // })
   @IsOptional()
   @IsArray()
   @ArrayMaxSize(TEGS_MAX_COUNT)
@@ -27,7 +27,7 @@ export class UpdatePostDto {
 //--------------------------------------
   @ApiProperty({
     description: 'Состояние публикации draft | published',
-    example: 'draft'
+    example: 'published'
   })
   @IsString({ message: `Допустимо одно из значений:
                         draft|published` })
@@ -35,17 +35,14 @@ export class UpdatePostDto {
   @IsOptional()
   state?:PostState;
 //--------------------------------------
-  @ApiProperty({
-    description: 'Был ли репост у публикации true | false',
-    example: 'false'
-  })
+
   @IsBoolean()
   @IsOptional()
   repost?:boolean;
 //--------------------------------------
   @ApiProperty({
     description: 'Признак новой  публикации. Для вновь созданных true, после рассылки уведомлений о новых публикациях - false',
-    example: 'true'
+    example: true
   })
   @IsBoolean()
   @IsOptional()
@@ -66,7 +63,7 @@ export class UpdatePostDto {
   @ApiProperty({required: true,
     description: `Уникальное имя поста в зависимости от типа публикации Название публикации (тип - видео, текст)
                   | текст цитаты (тип - цитата) | ссылка (тип - ссылка)`,
-    example: 'Автомобили'
+    example: 'Автомобили АвтомобилиАвтомобилиАвтомобилиАвтомобилиАвтомобилиАвтомобили'
   })
   @IsString()
   @IsOptional()
@@ -88,7 +85,7 @@ export class UpdatePostDto {
 
   @ApiProperty({
   description: 'Публикация типа текст -- текст с анонсом',
-  example: 'О модернизации модели Ford'
+  example: 'О модернизации модели Ford О модернизации модели Ford О модернизации модели Ford О модернизации модели Ford'
   })
   @IsString()
   @IsOptional()
@@ -98,7 +95,7 @@ export class UpdatePostDto {
 
   @ApiProperty({
     description: 'Публикация типа текст -- текст публикации, Публикация типа ссылка -- описание',
-    example: 'Компания Toyota Motors выпустила новый электромобиль'
+    example: 'Компания Toyota Motors выпустила новый электромобиль Компания Toyota Motors выпустила новый электромобиль Компания Toyota Motors выпустила новый электромобиль Компания Toyota Motors выпустила новый электромобиль'
   })
   @IsString()
   @IsOptional()

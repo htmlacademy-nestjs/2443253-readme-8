@@ -20,12 +20,13 @@ export class CreateUserDto {
 
   @ApiProperty({
     description:'User avatar file',
-    example: `project/apps/api/src/app/avatars/avatar1.jpg`
+    example: `project/apps/api/src/app/avatars/avatar1.jpg`,
+    required: false
 
   })
   @ApiProperty({type : 'string',format: 'binary' })
   @IsOptional()
-  public avatarFile?: unknown;
+  public avatarFile?: string;
 
   @ApiProperty({
     description:'User password',

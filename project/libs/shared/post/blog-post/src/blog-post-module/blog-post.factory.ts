@@ -21,11 +21,12 @@ export class BlogPostFactory implements EntityFactory<BlogPostEntity> {
     entity.originPostId = repost ? originPostId : "";
     entity.state = dto.state;
     entity.repost = repost;
-    entity.new = repost ? dto.new : true;
+    entity.new =  true;
     entity.type = dto.type;
     entity.name = dto.name;
 
     entity.video = dto.video;
+    entity.foto = dto.foto;
     entity.announcement = dto.announcement;
     entity.text = dto.text;
     entity.author = dto.author;

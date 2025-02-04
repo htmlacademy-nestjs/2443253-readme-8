@@ -1,9 +1,10 @@
 import { HttpService } from '@nestjs/axios';
-import { Body, Controller, HttpStatus, Param, ParseFilePipeBuilder, Post, Req, UploadedFile, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Inject, Param, ParseFilePipeBuilder, Post, Req, UploadedFile, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
 
-import { ChangePasswordUserDto, CreateUserDto, LoginUserDto, MAX_FILE_SIZE, MIME_TYPES } from '@project/authentication';
+import { ChangePasswordUserDto, CreateUserDto, LoginUserDto} from '@project/authentication';
+import {MAX_AVATAR_SIZE,  MIME_TYPES } from '@project/shareable';
 
-import { ApplicationServiceURL } from './app.config';
+
 import { AxiosExceptionFilter } from './app-filters/axios-exception.filter';
 
 import { CheckAuthGuard } from './guards/check-auth.guard';
@@ -13,13 +14,16 @@ import { ApiOperations } from './api.const';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AVATAR_FILE } from '@project/authentication';
 import { dtoToFormData, multerFileToFormData } from '@project/helpers';
+import { ConfigType } from '@nestjs/config';
+import applicationConfig from './app.config';
 @UseFilters(AxiosExceptionFilter)
 @ApiTags('Users authentication')
 @ApiBearerAuth()
 @Controller('users')
 export class UsersController {
   constructor(
-    private readonly httpService: HttpService
+    private readonly httpService: HttpService,
+    @Inject(applicationConfig.KEY) private readonly applicationsOptions: ConfigType<typeof applicationConfig>,
   ) {}
 
 
@@ -34,7 +38,7 @@ export class UsersController {
           .addFileTypeValidator({
             fileType: MIME_TYPES.join('|'),
           })
-          .addMaxSizeValidator({ maxSize: MAX_FILE_SIZE })
+          .addMaxSizeValidator({ maxSize: MAX_AVATAR_SIZE })
           .build({
             errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
           })
@@ -48,7 +52,7 @@ export class UsersController {
     if (avatarFile) {
       multerFileToFormData(avatarFile, formData, AVATAR_FILE);
     }
-    const { data } = await this.httpService.axiosRef.post(`${ApplicationServiceURL.Users}/register`, formData);
+    const { data } = await this.httpService.axiosRef.post(`${this.applicationsOptions.users}/register`, formData);
     return data;
   }
 
@@ -56,8 +60,8 @@ export class UsersController {
   @Post('notifynewposts')
   public async notifyNewPosts() {
     //Получим строку со списком наименований новых публикаций
-    const { data:newPosts } = await this.httpService.axiosRef.get(`${ApplicationServiceURL.Blog}/newposts`);
-    const { data } = await this.httpService.axiosRef.post(`${ApplicationServiceURL.Users}/notifynewposts`, newPosts);
+    const { data:newPosts } = await this.httpService.axiosRef.get(`${this.applicationsOptions.blog}/newposts`);
+    const { data } = await this.httpService.axiosRef.post(`${this.applicationsOptions.users}/notifynewposts`, newPosts);
 
     return data;
   }
@@ -65,14 +69,14 @@ export class UsersController {
   @ApiOperation({ summary: ApiOperations.Login })
   @Post('login')
   public async login(@Body() loginUserDto: LoginUserDto) {
-    const { data } = await this.httpService.axiosRef.post(`${ApplicationServiceURL.Users}/login`, loginUserDto);
+    const { data } = await this.httpService.axiosRef.post(`${this.applicationsOptions.users}/login`, loginUserDto);
     return data;
   }
 
   @ApiOperation({ summary: ApiOperations.GetNewTokens })
   @Post('refresh')
   public async refreshToken(@Req() req: Request) {
-    const { data } = await this.httpService.axiosRef.post(`${ApplicationServiceURL.Users}/refresh`, null, {
+    const { data } = await this.httpService.axiosRef.post(`${this.applicationsOptions.users}/refresh`, null, {
       headers: {
         'Authorization': req.headers['authorization']
       }
@@ -86,7 +90,7 @@ export class UsersController {
   @UseInterceptors(InjectUserIdInterceptor)
   @Post('changepassword')
   public async changePassword(@Body() changePasswordUserDto: ChangePasswordUserDto) {
-    const { data } = await this.httpService.axiosRef.post(`${ApplicationServiceURL.Users}/changepassword`, changePasswordUserDto);
+    const { data } = await this.httpService.axiosRef.post(`${this.applicationsOptions.users}/changepassword`, changePasswordUserDto);
     return data;
   }
 
@@ -95,7 +99,7 @@ export class UsersController {
   @UseInterceptors(InjectUserIdInterceptor)
   @Post('subscribe/:id')
   public async subscribe(@Param('id') id: string,@Req() request: Request) {
-    const { data } = await this.httpService.axiosRef.post(`${ApplicationServiceURL.Users}/subscribe/${id}/${request['user'].sub}`);
+    const { data } = await this.httpService.axiosRef.post(`${this.applicationsOptions.users}/subscribe/${id}/${request['user'].sub}`);
     return data;
   }
 
@@ -104,7 +108,7 @@ export class UsersController {
   @UseInterceptors(InjectUserIdInterceptor)
   @Post('unsubscribe/:id')
   public async unsubscribe(@Param('id') id: string,@Req() request: Request) {
-    const { data } = await this.httpService.axiosRef.post(`${ApplicationServiceURL.Users}/unsubscribe/${id}/${request['user'].sub}`);
+    const { data } = await this.httpService.axiosRef.post(`${this.applicationsOptions.users}/unsubscribe/${id}/${request['user'].sub}`);
     return data;
   }
 
