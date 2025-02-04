@@ -45,6 +45,9 @@ export class PostRdo {
   video: string;
 
   @Expose()
+  foto: string;
+
+  @Expose()
   announcement: string;
 
   @Expose()

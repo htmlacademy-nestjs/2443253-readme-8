@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 
 import { BlogPostRepository } from './blog-post.repository';
 import { BlogPostEntity } from './blog-post.entity';
@@ -11,6 +11,9 @@ import { PaginationResult } from '@project/core';
 import { BlogPostFactory } from './blog-post.factory';
 import { BlogCommentRepository, BlogCommentFactory, CreateCommentDto, BlogCommentEntity } from '@project/blog-comment';
 import { BlogUserEntity } from '@project/blog-user';
+import { applicationConfig } from '@project/post-config';
+import { FileUploaderService } from '@project/file-uploader';
+import { ConfigType } from '@nestjs/config';
 
 @Injectable()
 export class BlogPostService {
@@ -18,6 +21,8 @@ export class BlogPostService {
     private readonly blogPostRepository: BlogPostRepository,
     private readonly blogCommentRepository: BlogCommentRepository,
     private readonly blogCommentFactory: BlogCommentFactory,
+    private readonly fileUploaderService: FileUploaderService,
+    @Inject(applicationConfig.KEY) private readonly applicationsOptions: ConfigType<typeof applicationConfig>,
   ) {}
 
   public async checkPostByOwn(postId: string, userId:string): Promise<BlogPostEntity> {
@@ -41,8 +46,16 @@ export class BlogPostService {
     return await this.blogPostRepository.findNew();
   }
 
-  public async createPost(dto: CreatePostDto): Promise<BlogPostEntity> {
+  public async createPost(dto: CreatePostDto,fotoFile?: Express.Multer.File): Promise<BlogPostEntity> {
 
+    if (fotoFile) {
+      try {
+        const fileRdo = await this.fileUploaderService.writeFile(fotoFile,this.applicationsOptions.fotoUploadPath);
+        dto.foto = fileRdo.path;
+      } catch  {
+        throw new InternalServerErrorException(`File upload error!`);
+      }
+    }
     const newPost = BlogPostFactory.createFromCreatePostDto(dto);
     await this.blogPostRepository.save(newPost);
 

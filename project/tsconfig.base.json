@@ -42,6 +42,7 @@
       "@project/notify-config": ["libs/notify/notify-config/src/index.ts"],
       "@project/pipes": ["libs/shared/pipes/src/index.ts"],
       "@project/post": ["libs/shared/post/src/index.ts"],
+      "@project/post-config": ["libs/shared/post/post-config/src/index.ts"],
       "@project/shareable": ["shareable/common-const.ts"]
     }
   },

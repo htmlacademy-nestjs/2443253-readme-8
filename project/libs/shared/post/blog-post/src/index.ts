@@ -6,3 +6,4 @@ export { BlogPostFactory } from './blog-post-module/blog-post.factory';
 export { CreatePostDto } from './blog-post-module/dto/create-post.dto';
 export { UpdatePostDto } from './blog-post-module/dto/update-post.dto';
 export { BlogPostQuery } from './blog-post-module/blog-post.query';
+export { FOTO_FILE } from './blog-post-module/blog-post.constant';

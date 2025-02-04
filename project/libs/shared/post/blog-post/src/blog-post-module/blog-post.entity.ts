@@ -27,6 +27,7 @@ export class BlogPostEntity extends Entity implements StorableEntity<Post> {
 
   public name: string;//Тип публикации: видео,текст
   public video?: string;////Тип публикации: видео
+  public foto?: string;////Тип публикации: фото
   public announcement?: string;////Тип публикации: текст
   public text?: string;////Тип публикации: текст, цитата
   public author?: string;//Тип публикации: цитата
@@ -62,6 +63,7 @@ export class BlogPostEntity extends Entity implements StorableEntity<Post> {
 
     this.name = post.name;
     this.video = post.video;
+    this.foto = post.foto;
     this.announcement = post.announcement;
     this.text = post.text;
     this.author = post.author;
@@ -99,6 +101,7 @@ export class BlogPostEntity extends Entity implements StorableEntity<Post> {
 
       name: this.name,
       video: this.video,
+      foto: this.foto,
       announcement: this.announcement,
       text: this.text,
       author: this.author,

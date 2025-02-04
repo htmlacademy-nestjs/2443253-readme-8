@@ -6,9 +6,12 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseFilePipeBuilder,
   Patch,
   Post,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 
 import { fillDto } from '@project/helpers';
@@ -21,6 +24,10 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { BlogPostService } from './blog-post.service';
 import { CommentRdo, CreateCommentDto } from '@project/blog-comment';
 import { BlogUserEntity } from '@project/blog-user';
+import { ApiConsumes} from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { FOTO_FILE } from './blog-post.constant';
+import { MAX_FOTO_SIZE, MIME_TYPES } from '@project/shareable';
 
 
 @Controller('posts')
@@ -63,9 +70,21 @@ export class BlogPostController {
   }
 
 
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor(FOTO_FILE))
   @Post('/')
-  public async create(@Body() dto: CreatePostDto) {
-    const newPost = await this.blogPostService.createPost(dto);
+  public async create(@Body() dto: CreatePostDto,
+    @UploadedFile(
+    new ParseFilePipeBuilder()
+    .addFileTypeValidator({
+      fileType: MIME_TYPES.join('|'),
+    })
+    .addMaxSizeValidator({ maxSize: MAX_FOTO_SIZE })
+    .build({
+      errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+    }) ) fotoFile?: Express.Multer.File
+  ) {
+    const newPost = await this.blogPostService.createPost(dto,fotoFile);
     return fillDto(PostRdo, newPost.toPOJO());
   }
 
@@ -99,3 +118,4 @@ export class BlogPostController {
      await this.blogPostService.deleteComment(postId, userId);
   }
 }
+

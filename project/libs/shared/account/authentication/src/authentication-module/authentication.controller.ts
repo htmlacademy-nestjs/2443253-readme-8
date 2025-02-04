@@ -2,7 +2,7 @@ import { Body, Controller, Get, HttpCode, HttpStatus, Param, ParseFilePipeBuilde
 import { AuthenticationService } from './authentication.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AuthenticationResponseMessage, AVATAR_FILE, MIME_TYPES, MAX_FILE_SIZE } from './authentication.constant';
+import { AuthenticationResponseMessage, AVATAR_FILE} from './authentication.constant';
 import { LoggedUserRdo } from '../rdo/logged-user.rdo';
 import { UserRdo } from '../rdo/user.rdo';
 import { MongoIdValidationPipe } from '@project/pipes';
@@ -16,6 +16,7 @@ import { RequestWithTokenPayload } from './request-with-token-payload.interface'
 import { ChangePasswordUserDto } from '../dto/change-password.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import 'multer';
+import { MAX_AVATAR_SIZE, MIME_TYPES } from '@project/shareable';
 @ApiTags('authentication')
 @Controller('auth')
 export class AuthenticationController {
@@ -33,7 +34,6 @@ export class AuthenticationController {
   description: AuthenticationResponseMessage.UserExist,
 })
 @ApiConsumes('multipart/form-data')
-
 @UseInterceptors(FileInterceptor(AVATAR_FILE))
 @Post('register')
   public async create(
@@ -43,7 +43,7 @@ export class AuthenticationController {
       .addFileTypeValidator({
         fileType: MIME_TYPES.join('|'),
       })
-      .addMaxSizeValidator({ maxSize: MAX_FILE_SIZE })
+      .addMaxSizeValidator({ maxSize: MAX_AVATAR_SIZE })
       .build({
         errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
       })
