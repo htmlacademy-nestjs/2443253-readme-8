@@ -6,7 +6,7 @@ import { PrismaClientService } from "@project/models";
 import { OrderBy, PaginationResult} from "@project/core";
 import { Prisma } from "@prisma/client";
 import { BlogPostQuery } from "./blog-post.query";
-import { POSTS_FOR_ONE_REQUEST } from "./blog-post.constant";
+import { DefaultQueryParams } from "./blog-post.constant";
 
 
 @Injectable()
@@ -85,7 +85,7 @@ public async findById(id: string): Promise<BlogPostEntity> {
 
   //запрос с фильтрацией и пагинацией
   public async find(query?: BlogPostQuery): Promise<PaginationResult<BlogPostEntity>> {
-    const take = (query?.limit <= POSTS_FOR_ONE_REQUEST) ? query?.limit : POSTS_FOR_ONE_REQUEST;
+    const take = (query?.limit <= DefaultQueryParams.PostsForOneRequest) ? query?.limit : DefaultQueryParams.PostsForOneRequest;
     const skip = query?.page && take ? (query.page - 1) * take : undefined;
     const where: Prisma.PostWhereInput = {};
     const orderBy: Prisma.PostOrderByWithRelationInput = {};

@@ -4,19 +4,16 @@ import { IsArray, IsIn,  IsMongoId,  IsNumber, IsOptional, IsString } from 'clas
 import { OrderBy, PostState, PostType, SortDirection } from '@project/core';
 
 import {
-  DEFAULT_POST_COUNT_LIMIT,
-  DEFAULT_SORT_DIRECTION,
-  DEFAULT_PAGE_COUNT,
-  DEFAULT_SORT_TYPE,
-  DEFAULT_POST_STATE
+  DEFAULT_POST_STATE,
+  DefaultQueryParams
 } from './blog-post.constant';
 
 
 export class BlogPostQuery {
-  @Transform(({ value }) => +value || DEFAULT_POST_COUNT_LIMIT)
+  @Transform(({ value }) => +value || DefaultQueryParams.PostCountLimit)
   @IsNumber()
   @IsOptional()
-  public limit = DEFAULT_POST_COUNT_LIMIT;
+  public limit = DefaultQueryParams.PostCountLimit;
 
  //Запрос по тегам
   @IsString()
@@ -48,17 +45,17 @@ export class BlogPostQuery {
   //Направление сортировки
   @IsIn(Object.values(SortDirection))
   @IsOptional()
-  public sortDirection: SortDirection = DEFAULT_SORT_DIRECTION;
+  public sortDirection: SortDirection = DefaultQueryParams.SortDirection;
 
  //Признак сортировки
   @IsIn(Object.values(OrderBy))
   @IsOptional()
-  public sortType: OrderBy = DEFAULT_SORT_TYPE;
+  public sortType: OrderBy = DefaultQueryParams.SortType;
 
 
-  @Transform(({ value }) => +value || DEFAULT_PAGE_COUNT)
+  @Transform(({ value }) => +value || DefaultQueryParams.PageCount)
   @IsOptional()
-  public page: number = DEFAULT_PAGE_COUNT;
+  public page: number = DefaultQueryParams.PageCount;
 
 
   //Запрос по пользователю

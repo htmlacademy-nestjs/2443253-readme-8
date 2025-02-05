@@ -8,15 +8,14 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
-import { DEFAULT_PORT_ACCOUNTS } from '@project/shareable';
+import { DefaultAppPorts, GLOBAL_PREFIX } from '@project/shareable';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const globalPrefix = 'api';
-  app.setGlobalPrefix(globalPrefix);
+  app.setGlobalPrefix(GLOBAL_PREFIX);
 
   const configService = app.get(ConfigService);
-  const port = configService.get('application.port') | DEFAULT_PORT_ACCOUNTS;
+  const port = configService.get('application.port') | DefaultAppPorts.Accounts;
   const config = new DocumentBuilder()
   .setTitle('Account app')
   .setDescription('The accounts API description')
@@ -30,7 +29,7 @@ app.useGlobalPipes(new ValidationPipe({transform: true}));
 
   await app.listen(port);
   Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
+    `🚀 Application is running on: http://localhost:${port}/${GLOBAL_PREFIX}`
   );
 }
 

@@ -27,7 +27,7 @@ import { BlogUserEntity } from '@project/blog-user';
 import { ApiConsumes} from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FOTO_FILE } from './blog-post.constant';
-import { MAX_FOTO_SIZE, MIME_TYPES } from '@project/shareable';
+import { FileValidationLimits } from '@project/shareable';
 
 
 @Controller('posts')
@@ -77,9 +77,9 @@ export class BlogPostController {
     @UploadedFile(
     new ParseFilePipeBuilder()
     .addFileTypeValidator({
-      fileType: MIME_TYPES.join('|'),
+      fileType: FileValidationLimits.MimeTypes.join('|'),
     })
-    .addMaxSizeValidator({ maxSize: MAX_FOTO_SIZE })
+    .addMaxSizeValidator({ maxSize: FileValidationLimits.MaxFotoSize })
     .build({
       errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
     }) ) fotoFile?: Express.Multer.File
