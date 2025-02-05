@@ -6,5 +6,7 @@ export const BlogCommentValidateMessage = {
   InvalidID: 'Invalid author id',
 } as const;
 
-export const COMMENT_MIN_LENGTH = 10;
-export const COMMENT_MAX_LENGTH = 300;
+export const CommentValidationLimits = {
+  MessageMinLength: 10,
+  MessageMaxLength: 300,
+} as const;

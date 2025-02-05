@@ -10,7 +10,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { TEGS_MAX_COUNT, POST_MIN_LENGTH, POST_MAX_LENGTH, ANNOUNCE_MIN_LENGTH, ANNOUNCE_MAX_LENGTH, TEXT_MIN_LENGTH, TEXT_MAX_LENGTH, AUTHOR_MIN_LENGTH, AUTHOR_MAX_LENGTH } from '../blog-post.constant';
+import { PostValidationLimits } from '../blog-post.constant';
 
 
 export class UpdatePostDto {
@@ -22,7 +22,7 @@ export class UpdatePostDto {
   // })
   @IsOptional()
   @IsArray()
-  @ArrayMaxSize(TEGS_MAX_COUNT)
+  @ArrayMaxSize(PostValidationLimits.TegsMaxCount)
   tegs?: string[];
 //--------------------------------------
   @ApiProperty({
@@ -67,8 +67,8 @@ export class UpdatePostDto {
   })
   @IsString()
   @IsOptional()
-  @MinLength(POST_MIN_LENGTH)
-  @MaxLength(POST_MAX_LENGTH)
+  @MinLength(PostValidationLimits.PostMinLength)
+  @MaxLength(PostValidationLimits.PostMaxLength)
   name?: string; //Название публикации | текст цитаты | путь к файлу фото | ссылка (публикация типа ссылка)
 //--------------------------------------
 
@@ -89,8 +89,8 @@ export class UpdatePostDto {
   })
   @IsString()
   @IsOptional()
-  @MinLength(ANNOUNCE_MIN_LENGTH)
-  @MaxLength(ANNOUNCE_MAX_LENGTH)
+  @MinLength(PostValidationLimits.AnnounceMinLength)
+  @MaxLength(PostValidationLimits.AnnounceMaxLength)
   announcement?: string;
 
   @ApiProperty({
@@ -99,8 +99,8 @@ export class UpdatePostDto {
   })
   @IsString()
   @IsOptional()
-  @MinLength(TEXT_MIN_LENGTH)
-  @MaxLength(TEXT_MAX_LENGTH)
+  @MinLength(PostValidationLimits.TextMinLength)
+  @MaxLength(PostValidationLimits.TextMaxLength)
   text?: string;
 
   @ApiProperty({
@@ -109,8 +109,8 @@ export class UpdatePostDto {
   })
   @IsString()
   @IsOptional()
-  @MinLength(AUTHOR_MIN_LENGTH)
-  @MaxLength(AUTHOR_MAX_LENGTH)
+  @MinLength(PostValidationLimits.AuthorMinLength)
+  @MaxLength(PostValidationLimits.AuthorMaxLength)
   author?: string;
 
 }

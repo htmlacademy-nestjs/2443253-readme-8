@@ -12,18 +12,11 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { ANNOUNCE_MAX_LENGTH, ANNOUNCE_MIN_LENGTH, AUTHOR_MAX_LENGTH, AUTHOR_MIN_LENGTH, DEFAULT_POST_STATE, DEFAULT_POST_TYPE, POST_MAX_LENGTH, POST_MIN_LENGTH, TEXT_MAX_LENGTH, TEXT_MIN_LENGTH } from '../blog-post.constant';
+import { DEFAULT_POST_STATE, DEFAULT_POST_TYPE, PostValidationLimits } from '../blog-post.constant';
 
 export class CreatePostDto {
 
 //--------------------------------------------
-  // @ApiProperty({
-  //   description: 'Теги для публикации',
-  //   type: [String],
-  //   example: [],
-  //   required: false
-
-  // })
   @IsOptional()
   @IsArray()
   tegs: string[] = [];
@@ -62,8 +55,8 @@ export class CreatePostDto {
     example: 'Автомобили,Автомобили,Автомобили,Автомобили,Автомобили,Автомобили,Автомобили,'
   })
 
-  @MinLength(POST_MIN_LENGTH)
-  @MaxLength(POST_MAX_LENGTH)
+  @MinLength(PostValidationLimits.PostMinLength)
+  @MaxLength(PostValidationLimits.PostMaxLength)
   @IsString()
 
   name: string; //Название публикации | текст цитаты |  ссылка (публикация типа ссылка)
@@ -94,8 +87,8 @@ export class CreatePostDto {
   example: 'О модернизации модели Toyota,О модернизации модели Toyota,О модернизации модели Toyota',
   required: false
   })
-  @MinLength(ANNOUNCE_MIN_LENGTH)
-  @MaxLength(ANNOUNCE_MAX_LENGTH)
+  @MinLength(PostValidationLimits.AnnounceMinLength)
+  @MaxLength(PostValidationLimits.AnnounceMaxLength)
   @IsOptional()
   announcement?: string;
 //--------------------------------------------
@@ -105,8 +98,8 @@ export class CreatePostDto {
     example: 'Компания Toyota Motors выпустила новый электромобиль,Компания Toyota Motors выпустила новый электромобильКомпания Toyota Motors выпустила новый электромобиль',
     required: false
   })
-  @MinLength(TEXT_MIN_LENGTH)
-  @MaxLength(TEXT_MAX_LENGTH)
+  @MinLength(PostValidationLimits.TextMinLength)
+  @MaxLength(PostValidationLimits.TextMaxLength)
   @IsOptional()
   text?: string;
 //--------------------------------------------
@@ -116,8 +109,8 @@ export class CreatePostDto {
     required: false
   })
   @IsOptional()
-  @MinLength(AUTHOR_MIN_LENGTH)
-  @MaxLength(AUTHOR_MAX_LENGTH)
+  @MinLength(PostValidationLimits.AuthorMinLength)
+  @MaxLength(PostValidationLimits.AuthorMaxLength)
 
   author?: string;
 //--------------------------------------------

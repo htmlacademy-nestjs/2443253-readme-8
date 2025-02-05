@@ -16,7 +16,7 @@ import { RequestWithTokenPayload } from './request-with-token-payload.interface'
 import { ChangePasswordUserDto } from '../dto/change-password.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import 'multer';
-import { MAX_AVATAR_SIZE, MIME_TYPES } from '@project/shareable';
+import { FileValidationLimits } from '@project/shareable';
 @ApiTags('authentication')
 @Controller('auth')
 export class AuthenticationController {
@@ -41,9 +41,9 @@ export class AuthenticationController {
     @UploadedFile(
       new ParseFilePipeBuilder()
       .addFileTypeValidator({
-        fileType: MIME_TYPES.join('|'),
+        fileType: FileValidationLimits.MimeTypes.join('|'),
       })
-      .addMaxSizeValidator({ maxSize: MAX_AVATAR_SIZE })
+      .addMaxSizeValidator({ maxSize: FileValidationLimits.MaxAvatarSize })
       .build({
         errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
       })

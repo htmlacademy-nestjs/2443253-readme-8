@@ -10,9 +10,9 @@ import { ApiBearerAuth, ApiConsumes, ApiOperation } from '@nestjs/swagger';
 import { ApiOperations } from './api.const';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { dtoToFormData, multerFileToFormData } from '@project/helpers';
-import { MAX_FOTO_SIZE, MIME_TYPES } from '@project/shareable';
 import { ConfigType } from '@nestjs/config';
 import applicationConfig from './app.config';
+import { FileValidationLimits } from '@project/shareable';
 
 
 
@@ -57,9 +57,9 @@ export class BlogController {
   @UploadedFile(
             new ParseFilePipeBuilder()
             .addFileTypeValidator({
-              fileType: MIME_TYPES.join('|'),
+              fileType: FileValidationLimits.MimeTypes.join('|'),
             })
-            .addMaxSizeValidator({ maxSize: MAX_FOTO_SIZE })
+            .addMaxSizeValidator({ maxSize: FileValidationLimits.MaxFotoSize })
             .build({
               errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
             })

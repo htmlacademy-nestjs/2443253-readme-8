@@ -2,8 +2,6 @@ import { HttpService } from '@nestjs/axios';
 import { Body, Controller, HttpStatus, Inject, Param, ParseFilePipeBuilder, Post, Req, UploadedFile, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
 
 import { ChangePasswordUserDto, CreateUserDto, LoginUserDto} from '@project/authentication';
-import {MAX_AVATAR_SIZE,  MIME_TYPES } from '@project/shareable';
-
 
 import { AxiosExceptionFilter } from './app-filters/axios-exception.filter';
 
@@ -16,6 +14,7 @@ import { AVATAR_FILE } from '@project/authentication';
 import { dtoToFormData, multerFileToFormData } from '@project/helpers';
 import { ConfigType } from '@nestjs/config';
 import applicationConfig from './app.config';
+import { FileValidationLimits } from '@project/shareable';
 @UseFilters(AxiosExceptionFilter)
 @ApiTags('Users authentication')
 @ApiBearerAuth()
@@ -36,9 +35,9 @@ export class UsersController {
         @UploadedFile(
           new ParseFilePipeBuilder()
           .addFileTypeValidator({
-            fileType: MIME_TYPES.join('|'),
+            fileType: FileValidationLimits.MimeTypes.join('|'),
           })
-          .addMaxSizeValidator({ maxSize: MAX_AVATAR_SIZE })
+          .addMaxSizeValidator({ maxSize: FileValidationLimits.MaxAvatarSize })
           .build({
             errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
           })

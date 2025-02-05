@@ -1,5 +1,5 @@
 import { registerAs } from '@nestjs/config';
-import { DEFAULT_PORT_PUBLICATIONS } from '@project/shareable';
+import { DefaultAppPorts } from '@project/shareable';
 import Joi from 'joi';
 
 const ENVIRONMENTS = ['development', 'production', 'stage'] as const;
@@ -15,7 +15,7 @@ export interface ApplicationConfig {
 
 const validationSchema = Joi.object({
   environment: Joi.string().valid(...ENVIRONMENTS).required(),
-  port: Joi.number().port().default(DEFAULT_PORT_PUBLICATIONS),
+  port: Joi.number().port().default(DefaultAppPorts.Publications),
   fotoUploadPath : Joi.string().required(),
 });
 
@@ -29,7 +29,7 @@ function validateConfig(config: ApplicationConfig): void {
 function getConfig(): ApplicationConfig {
   const config: ApplicationConfig = {
     environment: process.env.NODE_ENV as Environment,
-    port: parseInt(process.env.PORT || `${DEFAULT_PORT_PUBLICATIONS}`, 10),
+    port: parseInt(process.env.PORT || `${DefaultAppPorts.Publications}`, 10),
     fotoUploadPath : process.env.FOTO_UPLOAD_PATH || DEFAULT_FOTO_UPLOAD_PATH
   };
 

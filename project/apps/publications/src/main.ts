@@ -3,13 +3,12 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { DEFAULT_PORT_PUBLICATIONS } from '@project/shareable';
+import { DefaultAppPorts, GLOBAL_PREFIX } from '@project/shareable';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const globalPrefix = 'api';
-  app.setGlobalPrefix(globalPrefix);
-  const port = process.env.PORT || DEFAULT_PORT_PUBLICATIONS;
+  app.setGlobalPrefix(GLOBAL_PREFIX);
+  const port = process.env.PORT || DefaultAppPorts.Publications;
   const config = new DocumentBuilder()
     .setTitle('Publications app')
     .setDescription('The publications API description')
@@ -23,7 +22,7 @@ async function bootstrap() {
 
   await app.listen(port);
   Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
+    `🚀 Application is running on: http://localhost:${port}/${GLOBAL_PREFIX}`
   );
 }
 
